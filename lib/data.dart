@@ -22,3 +22,36 @@ String email = 'Please Login';
 String address = 'Please Login';
 String validityPeriod = 'Please Login';
 String currentUsage = 'Please Login';
+String sessionUsage = 'Please Login';
+String plan = 'Please Login';
+Map<String, dynamic> planMap;
+
+Map<String, dynamic> planDetails(String plan) {
+  var alpha = '';
+  var numero = '';
+  List<String> data = [];
+  for (var i = 0; i < plan.length; i++) {
+    if (plan[i].contains(RegExp(r'[A-Z]'))) {
+      alpha += plan[i];
+      numero != '' ? data.add(numero) : numero = numero;
+      numero = '';
+    }
+    if (plan[i].contains(RegExp(r'[0-9]'))) {
+      numero += plan[i];
+      alpha != '' ? data.add(alpha) : alpha = alpha;
+      alpha = '';
+    }
+  }
+  data.remove('M');
+  data.remove('G');
+  if (data.length == 3) {
+    data.add('30');
+  }
+
+  return {
+    'Type': data[0],
+    'Speed': int.parse(data[1]),
+    'Limit': double.parse(data[2]),
+    'Validity': int.parse(data[3])
+  };
+}

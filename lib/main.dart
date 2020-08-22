@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:Broadband/data.dart';
+import 'package:Broadband/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:requests/requests.dart';
 import 'data.dart';
@@ -205,7 +206,38 @@ class _MyHomePageState extends State<MyHomePage> {
               var valind = response.content().indexOf('lblValidityPeriod');
               var currind = response.content().indexOf('lblCurrentUsage');
               var adddresind = response.content().indexOf('lblAddress');
+              var planind = response.content().indexOf('lblPlanName');
+              var sessind = response.content().indexOf('lblTotalData');
               if (numind != -1) {
+                {
+                  var sessdata =
+                      response.content().substring(sessind, sessind + 50);
+                  int startIndex;
+                  int endIndex;
+                  for (var i = 0; i < sessdata.length; i++) {
+                    if (sessdata[i] == '>' && startIndex == null)
+                      startIndex = i;
+                    if (sessdata[i] == '<' && endIndex == null) endIndex = i;
+                  }
+                  setState(() {
+                    sessionUsage = sessdata.substring(startIndex + 1, endIndex);
+                  });
+                }
+                {
+                  var plandata =
+                      response.content().substring(planind, planind + 250);
+                  int startIndex;
+                  int endIndex;
+                  for (var i = 0; i < plandata.length; i++) {
+                    if (plandata[i] == '>' && startIndex == null)
+                      startIndex = i;
+                    if (plandata[i] == '<' && endIndex == null) endIndex = i;
+                  }
+                  setState(() {
+                    plan = plandata.substring(startIndex + 1, endIndex);
+                  });
+                }
+                planMap = planDetails(plan);
                 {
                   var numdata =
                       response.content().substring(numind, numind + 60);
@@ -290,6 +322,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     currentUsage = currdata.substring(startIndex + 1, endIndex);
                   });
                 }
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => HomePage()));
               } else
                 test();
             });

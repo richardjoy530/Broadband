@@ -31,6 +31,9 @@ dependencies:
   http: ^0.12.2
   requests: ^3.3.0
   html: ^0.14.0+3
+  sleek_circular_slider: ^1.1.0
+  getwidget: ^1.1.0
+
 
 dev_dependencies:
   flutter_test:

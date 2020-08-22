@@ -53,11 +53,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        // decoration: BoxDecoration(
-        //     gradient: LinearGradient(
-        //       begin: Alignment.topCenter,
-        //       end: Alignment.bottomLeft,
-        //       colors: [Color(0xff0d4dff),Color(0xffffffff)])),
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('images/login.png'), fit: BoxFit.cover)),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -67,39 +65,52 @@ class _MyHomePageState extends State<MyHomePage> {
                       fontWeight: FontWeight.bold,
                       fontSize: 25,
                       fontFamily: 'Roboto',
-                      color: Colors.black)),
+                      color: Color(0xff1F4D84))), 
               Column(
                 children: [
                   Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Color(0xffE1ECF9)),
                     width: MediaQuery.of(context).size.width / 1.5,
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(5.0),
                       child: TextField(
+                        style: TextStyle(color: Color(0xff0A223f)),
+                        cursorColor: Color(0xff0A223f),
                         textAlign: TextAlign.center,
                         controller: usernameController,
                         maxLines: 1,
                         maxLength: 20,
                         decoration: InputDecoration(
                             hintText: 'Username',
+                            hintStyle: TextStyle(color: Color(0xffA0B3C9)),
                             border: InputBorder.none,
                             counterText: ''),
                       ),
                     ),
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Container(
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Color(0xffE1ECF9)),
                     width: MediaQuery.of(context).size.width / 1.5,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextField(
+                        style: TextStyle(color: Color(0xff0A223f)),
                         textAlign: TextAlign.center,
+                        cursorColor: Color(0xff0A223f),
                         controller: passwordController,
                         maxLines: 1,
                         maxLength: 20,
                         obscureText: true,
                         decoration: InputDecoration(
                             hintText: 'Password',
+                            hintStyle: TextStyle(color: Color(0xffA0B3C9)),
                             border: InputBorder.none,
                             counterText: ''),
                       ),
@@ -118,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: MediaQuery.of(context).size.width / 2.5,
                   height: 75,
                   decoration: BoxDecoration(
-                    color: Color(0xff00d0a5),
+                    color: Color(0xff0A223f),
                     borderRadius: BorderRadius.all(Radius.circular(50.0)),
                   ),
                   child: Center(

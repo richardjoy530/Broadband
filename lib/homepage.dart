@@ -20,7 +20,10 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Icon(Icons.data_usage,color: Color(0xff555555),),
+                  Icon(
+                    Icons.data_usage,
+                    color: Color(0xff555555),
+                  ),
                   Text(
                     'BroadBand Usage',
                     style: TextStyle(
@@ -39,8 +42,10 @@ class _HomePageState extends State<HomePage> {
               ),
               SleekCircularSlider(
                 initialValue: (double.parse(
-                  currentUsage.substring(0, currentUsage.length - 3),
-                )+double.parse(sessionUsage.substring(6,sessionUsage.length-3))),
+                      currentUsage.substring(0, currentUsage.length - 3),
+                    ) +
+                    double.parse(
+                        sessionUsage.substring(6, sessionUsage.length - 3))),
                 max: planMap['Limit'],
                 appearance: CircularSliderAppearance(
                   size: MediaQuery.of(context).size.width / 1.5,
@@ -80,12 +85,14 @@ class _HomePageState extends State<HomePage> {
                             )
                           ],
                         ),
-                        Text('Used',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w300,
-                                color: Colors.black38))
+                        Text(
+                          'Used',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.black38),
+                        )
                       ],
                     ),
                   );
@@ -105,11 +112,21 @@ class _HomePageState extends State<HomePage> {
                       child: Center(
                         child: Column(
                           children: [
-                            Text((planMap['Limit'] -double.parse(sessionUsage.substring(6,sessionUsage.length-3))-
-                                    double.parse(currentUsage.substring(
-                                        0, currentUsage.length - 3))).toStringAsFixed(2)
-                                +' GB',textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 20),),
+                            Text(
+                              (planMap['Limit'] -
+                                          double.parse(
+                                            sessionUsage.substring(
+                                                6, sessionUsage.length - 3),
+                                          ) -
+                                          double.parse(
+                                            currentUsage.substring(
+                                                0, currentUsage.length - 3),
+                                          ))
+                                      .toStringAsFixed(2) +
+                                  ' GB',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 20),
+                            ),
                             Text(
                               'Remaining',
                               textAlign: TextAlign.center,
@@ -122,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  Icon(Icons.link,color:Colors.black38),
+                  Icon(Icons.link, color: Colors.black38),
                   Container(
                     width: MediaQuery.of(context).size.width / 3,
                     decoration: BoxDecoration(
@@ -158,12 +175,14 @@ class _HomePageState extends State<HomePage> {
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
-                      color: Color(0xffefefef),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                  color: Color(0xffefefef),
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 child: ListTile(
                   leading: Icon(Icons.account_circle),
-                  title: Text(name[0].toUpperCase()+name.substring(1).toLowerCase()),
+                  title: Text(
+                    name[0].toUpperCase() + name.substring(1).toLowerCase(),
+                  ),
                   subtitle: Text(email),
                 ),
               )

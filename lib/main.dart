@@ -51,38 +51,87 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            TextField(
-              controller: usernameController,
-              maxLines: 1,
-              maxLength: 20,
-              decoration: InputDecoration(hintText: 'Username'),
-            ),
-            TextField(
-              controller: passwordController,
-              maxLines: 1,
-              maxLength: 20,
-              decoration: InputDecoration(hintText: 'Password'),
-            ),
-            RaisedButton(
-              child: Text('Login'),
-              onPressed: () {
-                username = usernameController.text;
-                password = passwordController.text;
-                test();
-                print([usernameController.text, passwordController.text]);
-              },
-            ),
-            Text('Name : $name'),
-            Text('Mobile Number : $mobNumber'),
-            Text('Email Id : $email'),
-            Text('Address : $address'),
-            Text('Validity : $validityPeriod'),
-            Text('Total Usage : $currentUsage'),
-          ],
+      body: Container(
+        // decoration: BoxDecoration(
+        //     gradient: LinearGradient(
+        //       begin: Alignment.topCenter,
+        //       end: Alignment.bottomLeft,
+        //       colors: [Color(0xff0d4dff),Color(0xffffffff)])),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Text('KeralaVision\n BroadBand',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                      fontFamily: 'Roboto',
+                      color: Colors.black)),
+              Column(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        controller: usernameController,
+                        maxLines: 1,
+                        maxLength: 20,
+                        decoration: InputDecoration(
+                            hintText: 'Username',
+                            border: InputBorder.none,
+                            counterText: ''),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        controller: passwordController,
+                        maxLines: 1,
+                        maxLength: 20,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            hintText: 'Password',
+                            border: InputBorder.none,
+                            counterText: ''),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Listener(
+                onPointerUp: (pointerUpEvent) {
+                  username = usernameController.text;
+                  password = passwordController.text;
+                  test();
+                  print([usernameController.text, passwordController.text]);
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 2.5,
+                  height: 75,
+                  decoration: BoxDecoration(
+                    color: Color(0xff00d0a5),
+                    borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                  ),
+                  child: Center(
+                      child: Text(
+                    'Login',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontFamily: 'Roboto'),
+                  )),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -144,102 +193,108 @@ class _MyHomePageState extends State<MyHomePage> {
       Requests.post(url,
               body: body, bodyEncoding: RequestBodyEncoding.FormURLEncoded)
           .then((response) {
-            if(response.statusCode==302){
-
-            
-        url =
-            'https://myaccount.keralavisionisp.com/Customer/HomePage.aspx?Id=147205';
-        Requests.get(url).then((response) {
-          url = 'https://myaccount.keralavisionisp.com/Customer/Gauge.aspx';
+        if (response.statusCode == 302) {
+          url =
+              'https://myaccount.keralavisionisp.com/Customer/HomePage.aspx?Id=147205';
           Requests.get(url).then((response) {
-            var numind = response.content().indexOf('lblMobile');
-            var nameind = response.content().indexOf('lblName');
-            var emailind = response.content().indexOf('lblEmail');
-            var valind = response.content().indexOf('lblValidityPeriod');
-            var currind = response.content().indexOf('lblCurrentUsage');
-            var adddresind = response.content().indexOf('lblAddress');
-            if (numind != -1) { 
-              {
-                var numdata = response.content().substring(numind, numind + 60);
-                int startIndex;
-                int endIndex;
-                for (var i = 0; i < numdata.length; i++) {
-                  if (numdata[i] == '>' && startIndex == null) startIndex = i;
-                  if (numdata[i] == '<' && endIndex == null) endIndex = i;
+            url = 'https://myaccount.keralavisionisp.com/Customer/Gauge.aspx';
+            Requests.get(url).then((response) {
+              var numind = response.content().indexOf('lblMobile');
+              var nameind = response.content().indexOf('lblName');
+              var emailind = response.content().indexOf('lblEmail');
+              var valind = response.content().indexOf('lblValidityPeriod');
+              var currind = response.content().indexOf('lblCurrentUsage');
+              var adddresind = response.content().indexOf('lblAddress');
+              if (numind != -1) {
+                {
+                  var numdata =
+                      response.content().substring(numind, numind + 60);
+                  int startIndex;
+                  int endIndex;
+                  for (var i = 0; i < numdata.length; i++) {
+                    if (numdata[i] == '>' && startIndex == null) startIndex = i;
+                    if (numdata[i] == '<' && endIndex == null) endIndex = i;
+                  }
+                  setState(() {
+                    mobNumber = numdata.substring(startIndex + 1, endIndex);
+                  });
                 }
-                setState(() {
-                  mobNumber = numdata.substring(startIndex + 1, endIndex);
-                });
-              }
-              {
-                var namedata =
-                    response.content().substring(nameind, nameind + 150);
-                int startIndex;
-                int endIndex;
-                for (var i = 0; i < namedata.length; i++) {
-                  if (namedata[i] == '>' && startIndex == null) startIndex = i;
-                  if (namedata[i] == '<' && endIndex == null) endIndex = i;
+                {
+                  var namedata =
+                      response.content().substring(nameind, nameind + 150);
+                  int startIndex;
+                  int endIndex;
+                  for (var i = 0; i < namedata.length; i++) {
+                    if (namedata[i] == '>' && startIndex == null)
+                      startIndex = i;
+                    if (namedata[i] == '<' && endIndex == null) endIndex = i;
+                  }
+                  setState(() {
+                    name = namedata.substring(startIndex + 1, endIndex);
+                  });
                 }
-                setState(() {
-                  name = namedata.substring(startIndex + 1, endIndex);
-                });
-              }
-              {
-                var emaildata =
-                    response.content().substring(emailind, emailind + 70);
-                int startIndex;
-                int endIndex;
-                for (var i = 0; i < emaildata.length; i++) {
-                  if (emaildata[i] == '>' && startIndex == null) startIndex = i;
-                  if (emaildata[i] == '<' && endIndex == null) endIndex = i;
+                {
+                  var emaildata =
+                      response.content().substring(emailind, emailind + 70);
+                  int startIndex;
+                  int endIndex;
+                  for (var i = 0; i < emaildata.length; i++) {
+                    if (emaildata[i] == '>' && startIndex == null)
+                      startIndex = i;
+                    if (emaildata[i] == '<' && endIndex == null) endIndex = i;
+                  }
+                  setState(() {
+                    email = emaildata.substring(startIndex + 1, endIndex);
+                  });
                 }
-                setState(() {
-                  email = emaildata.substring(startIndex + 1, endIndex);
-                });
-              }
-              {
-                var addressdata =
-                    response.content().substring(adddresind, adddresind + 200);
-                int startIndex;
-                int endIndex;
-                for (var i = 0; i < addressdata.length; i++) {
-                  if (addressdata[i] == '>' && startIndex == null)
-                    startIndex = i;
-                  if (addressdata[i] == '<' && endIndex == null) endIndex = i;
+                {
+                  var addressdata = response
+                      .content()
+                      .substring(adddresind, adddresind + 200);
+                  int startIndex;
+                  int endIndex;
+                  for (var i = 0; i < addressdata.length; i++) {
+                    if (addressdata[i] == '>' && startIndex == null)
+                      startIndex = i;
+                    if (addressdata[i] == '<' && endIndex == null) endIndex = i;
+                  }
+                  setState(() {
+                    address = addressdata.substring(startIndex + 1, endIndex);
+                  });
                 }
-                setState(() {
-                  address = addressdata.substring(startIndex + 1, endIndex);
-                });
-              }
-              {
-                var valdata = response.content().substring(valind, valind + 50);
-                int startIndex;
-                int endIndex;
-                for (var i = 0; i < valdata.length; i++) {
-                  if (valdata[i] == '>' && startIndex == null) startIndex = i;
-                  if (valdata[i] == '<' && endIndex == null) endIndex = i;
+                {
+                  var valdata =
+                      response.content().substring(valind, valind + 50);
+                  int startIndex;
+                  int endIndex;
+                  for (var i = 0; i < valdata.length; i++) {
+                    if (valdata[i] == '>' && startIndex == null) startIndex = i;
+                    if (valdata[i] == '<' && endIndex == null) endIndex = i;
+                  }
+                  setState(() {
+                    validityPeriod =
+                        valdata.substring(startIndex + 1, endIndex);
+                  });
                 }
-                setState(() {
-                  validityPeriod = valdata.substring(startIndex + 1, endIndex);
-                });
-              }
-              {
-                var currdata =
-                    response.content().substring(currind, currind + 50);
-                int startIndex;
-                int endIndex;
-                for (var i = 0; i < currdata.length; i++) {
-                  if (currdata[i] == '>' && startIndex == null) startIndex = i;
-                  if (currdata[i] == '<' && endIndex == null) endIndex = i;
+                {
+                  var currdata =
+                      response.content().substring(currind, currind + 50);
+                  int startIndex;
+                  int endIndex;
+                  for (var i = 0; i < currdata.length; i++) {
+                    if (currdata[i] == '>' && startIndex == null)
+                      startIndex = i;
+                    if (currdata[i] == '<' && endIndex == null) endIndex = i;
+                  }
+                  setState(() {
+                    currentUsage = currdata.substring(startIndex + 1, endIndex);
+                  });
                 }
-                setState(() {
-                  currentUsage = currdata.substring(startIndex + 1, endIndex);
-                });
-              }
-            } else
-              test();
+              } else
+                test();
+            });
           });
-        });}
+        }
       });
     });
   }

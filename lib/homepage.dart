@@ -41,12 +41,16 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               SleekCircularSlider(
-                initialValue: (double.parse(
-                      currentUsage.substring(0, currentUsage.length - 3),
-                    ) +
-                    double.parse(
-                        sessionUsage.substring(6, sessionUsage.length - 3))),
-                max: planMap['Limit'],
+                initialValue: planMap['Type'] == 'UL30'
+                    ? 30 -
+                        double.parse(validityPeriod.substring(
+                            0, validityPeriod.length - 4))
+                    : (double.parse(
+                          currentUsage.substring(0, currentUsage.length - 3),
+                        ) +
+                        double.parse(sessionUsage.substring(
+                            6, sessionUsage.length - 3))),
+                max: planMap['Type'] == 'UL30' ? 30 : planMap['Limit'],
                 appearance: CircularSliderAppearance(
                   size: MediaQuery.of(context).size.width / 1.5,
                   startAngle: -90,
@@ -68,31 +72,49 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              percentage.toStringAsFixed(2),
+                              (30 - percentage.round()).toString(),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Text(
-                              ' GB',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.black38),
-                            )
+                            planMap['Type'] == 'UL30'
+                                ? Text(
+                                    ' Days',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.black38),
+                                  )
+                                : Text(
+                                    ' GB',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.black38),
+                                  )
                           ],
                         ),
-                        Text(
-                          'Used',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w300,
-                              color: Colors.black38),
-                        )
+                        planMap['Type'] == 'UL30'
+                            ? Text(
+                                'Remaining',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.black38),
+                              )
+                            : Text(
+                                'Used',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.black38),
+                              )
                       ],
                     ),
                   );
@@ -110,32 +132,58 @@ class _HomePageState extends State<HomePage> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Center(
-                        child: Column(
-                          children: [
-                            Text(
-                              (planMap['Limit'] -
-                                          double.parse(
-                                            sessionUsage.substring(
-                                                6, sessionUsage.length - 3),
-                                          ) -
-                                          double.parse(
-                                            currentUsage.substring(
-                                                0, currentUsage.length - 3),
-                                          ))
-                                      .toStringAsFixed(2) +
-                                  ' GB',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            Text(
-                              'Remaining',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.black38),
-                            )
-                          ],
-                        ),
+                        child: planMap['Type'] == 'UL30'
+                            ? Column(
+                                children: [
+                                  Text(
+                                    (double.parse(
+                                                  sessionUsage.substring(6,
+                                                      sessionUsage.length - 3),
+                                                ) +
+                                                double.parse(
+                                                  currentUsage.substring(0,
+                                                      currentUsage.length - 3),
+                                                ))
+                                            .toStringAsFixed(2) +
+                                        ' GB',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  Text(
+                                    'Used',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.black38),
+                                  )
+                                ],
+                              )
+                            : Column(
+                                children: [
+                                  Text(
+                                    (planMap['Limit'] -
+                                                double.parse(
+                                                  sessionUsage.substring(6,
+                                                      sessionUsage.length - 3),
+                                                ) -
+                                                double.parse(
+                                                  currentUsage.substring(0,
+                                                      currentUsage.length - 3),
+                                                ))
+                                            .toStringAsFixed(2) +
+                                        ' GB',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  Text(
+                                    'Remaining',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.black38),
+                                  )
+                                ],
+                              ),
                       ),
                     ),
                   ),
@@ -149,24 +197,41 @@ class _HomePageState extends State<HomePage> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Center(
-                        child: Column(
-                          children: [
-                            Text(
-                              validityPeriod.substring(
-                                      0, validityPeriod.length - 4) +
-                                  ' Days',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            Text(
-                              'Remaining',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.black38),
-                            )
-                          ],
-                        ),
+                        child: planMap['Type'] == 'UL30'
+                            ? Column(
+                                children: [
+                                  Text(
+                                    'Unlimited Data',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  Text(
+                                    'Remaining',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.black38),
+                                  )
+                                ],
+                              )
+                            : Column(
+                                children: [
+                                  Text(
+                                    validityPeriod.substring(
+                                            0, validityPeriod.length - 4) +
+                                        ' Days',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  Text(
+                                    'Remaining',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.black38),
+                                  )
+                                ],
+                              ),
                       ),
                     ),
                   )
@@ -178,71 +243,71 @@ class _HomePageState extends State<HomePage> {
                   color: Color(0xffefefef),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                // child: ListTile(
-                //   leading: Icon(Icons.network_check),
-                //   title: Row(
-                //     children: [
-                //       Text(
-                //         'Down: ',
-                //         textAlign: TextAlign.center,
-                //         style: TextStyle(
-                //             fontWeight: FontWeight.w300, color: Colors.black38),
-                //       ),
-                //       Text(
-                //         '45.6 mb/s',
-                //         textAlign: TextAlign.center,
-                //         style: TextStyle(
-                //             fontWeight: FontWeight.w300, color: Colors.black38),
-                //       ),
-                //       Text(
-                //         ' - Up: ',
-                //         textAlign: TextAlign.center,
-                //         style: TextStyle(
-                //             fontWeight: FontWeight.w300, color: Colors.black38),
-                //       ),
-                //       Text(
-                //         '46.7 mb/s',
-                //         textAlign: TextAlign.center,
-                //         style: TextStyle(
-                //             fontWeight: FontWeight.w300, color: Colors.black38),
-                //       )
-                //     ],
-                //   ),
-                //   onTap: () {
-                //     internetSpeedTest.startDownloadTesting(
-                //       onDone: (double transferRate, SpeedUnit unit) {
-                //         setState(() {
-                //           downSpeed = transferRate.toString();
-                //         });
-                //       },
-                //       onProgress: (double percent, double transferRate,
-                //           SpeedUnit unit) {
-                //         setState(() {
-                //           downSpeed = transferRate.toString();
-                //         });
-                //       },
-                //       onError: (String errorMessage, String speedTestError) {
-                //         downSpeed = 'Error';
-                //       },
-                //     );
-                //     internetSpeedTest.startUploadTesting(
-                //       onDone: (double transferRate, SpeedUnit unit) {
-                //         setState(() {
-                //           upSpeed = transferRate.toString();
-                //         });
-                //       },
-                //       onProgress: (double percent, double transferRate,
-                //           SpeedUnit unit) {
-                //         setState(() {
-                //           upSpeed = transferRate.toString();
-                //         });
-                //       },
-                //       onError: (String errorMessage, String speedTestError) {
-                //         upSpeed = 'Error';
-                //       },
-                //     );
-                //   },
-                // ),
+                child: ListTile(
+                  leading: Icon(Icons.network_check),
+                  title: Row(
+                    children: [
+                      Text(
+                        'Down: ',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w300, color: Colors.black38),
+                      ),
+                      Text(
+                        '45.6 mb/s',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w300, color: Colors.black38),
+                      ),
+                      Text(
+                        ' - Up: ',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w300, color: Colors.black38),
+                      ),
+                      Text(
+                        '46.7 mb/s',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w300, color: Colors.black38),
+                      )
+                    ],
+                  ),
+                  onTap: () {
+                    // internetSpeedTest.startDownloadTesting(
+                    //   onDone: (double transferRate, SpeedUnit unit) {
+                    //     setState(() {
+                    //       downSpeed = transferRate.toString();
+                    //     });
+                    //   },
+                    //   onProgress: (double percent, double transferRate,
+                    //       SpeedUnit unit) {
+                    //     setState(() {
+                    //       downSpeed = transferRate.toString();
+                    //     });
+                    //   },
+                    //   onError: (String errorMessage, String speedTestError) {
+                    //     downSpeed = 'Error';
+                    //   },
+                    // );
+                    // internetSpeedTest.startUploadTesting(
+                    //   onDone: (double transferRate, SpeedUnit unit) {
+                    //     setState(() {
+                    //       upSpeed = transferRate.toString();
+                    //     });
+                    //   },
+                    //   onProgress: (double percent, double transferRate,
+                    //       SpeedUnit unit) {
+                    //     setState(() {
+                    //       upSpeed = transferRate.toString();
+                    //     });
+                    //   },
+                    //   onError: (String errorMessage, String speedTestError) {
+                    //     upSpeed = 'Error';
+                    //   },
+                    // );
+                  },
+                ),
               ),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 20),

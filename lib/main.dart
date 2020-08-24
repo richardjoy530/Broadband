@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:Broadband/data.dart';
 import 'package:Broadband/homepage.dart';
 import 'package:flutter/material.dart';
-import 'package:internet_speed_test/internet_speed_test.dart';
 import 'package:requests/requests.dart';
 import 'data.dart';
 
@@ -40,7 +39,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     usernameController = TextEditingController();
     passwordController = TextEditingController();
-    internetSpeedTest = InternetSpeedTest();
     super.initState();
   }
 
@@ -131,39 +129,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   username = usernameController.text;
                   password = passwordController.text;
                   test();
-                  // internetSpeedTest.startUploadTesting(
-                  //   onDone: (double transferRate, SpeedUnit unit) {
-                  //     print('the transfer rate $transferRate');
-                  //     setState(() {
-                  //       upSpeed = transferRate.toString();
-                  //     });
-                  //   },
-                  //   onProgress:
-                  //       (double percent, double transferRate, SpeedUnit unit) {
-                  //     print(
-                  //         'the transfer rate $transferRate, the percent $percent');
-                  //     setState(() {
-                  //       upSpeed = transferRate.toString();
-                  //     });
-                  //   },
-                  //   onError: (String errorMessage, String speedTestError) {
-                  //       upSpeed = 'Error';
-                  //   },
-                  // );
-                  // internetSpeedTest.startDownloadTesting(
-                  //   onDone: (double transferRate, SpeedUnit unit) {
-                  //     setState(() {
-                  //       downSpeed = transferRate.toString();
-                  //     });
-                  //   },
-                  //   onProgress:
-                  //       (double percent, double transferRate, SpeedUnit unit) {
-                  //       downSpeed = transferRate.toString();
-                  //   },
-                  //   onError: (String errorMessage, String speedTestError) {
-                  //       downSpeed = 'Error';
-                  //   },
-                  // );
+                  // username = 'drradhakrishnan1647';
+                  // password = 'drradhakrishnan1647';
                   print([usernameController.text, passwordController.text]);
                 },
                 child: Container(
@@ -193,8 +160,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> test() async {
     /// LogIn Page GET Response /////////////////////
     Requests.get(url).then((response) {
-      print('---------1');
-      print(response.content());
       int viewstateind = response.content().indexOf('__VIEWSTATE');
       int viewstategeneratorind =
           response.content().indexOf('__VIEWSTATEGENERATOR');
@@ -203,7 +168,9 @@ class _MyHomePageState extends State<MyHomePage> {
 //////////////////////////////////////// ViewState /////////////////////
       slicedResponse =
           response.content().substring(viewstateind, viewstateind + 4500);
-      for (i = 0; i < slicedResponse.length; i++)
+      startIndex = null;
+      endIndex = null;
+      for (i = 0; endIndex == null; i++)
         if (slicedResponse[i] == '/' && startIndex == null)
           startIndex = i;
         else if (slicedResponse[i] == '"' &&
@@ -223,7 +190,9 @@ class _MyHomePageState extends State<MyHomePage> {
       slicedResponse = response
           .content()
           .substring(eventvalidationind, eventvalidationind + 300);
-      for (var i = 0; i < slicedResponse.length; i++)
+      startIndex = null;
+      endIndex = null;
+      for (var i = 0; endIndex == null; i++)
         if (slicedResponse[i] == '/' && startIndex == null)
           startIndex = i;
         else if (slicedResponse[i] == '"' &&
@@ -231,129 +200,111 @@ class _MyHomePageState extends State<MyHomePage> {
             startIndex != null) endIndex = i;
       eventvalidation = slicedResponse.substring(startIndex, endIndex);
 
-      /// LogIn POST Response /////////////////////
+      //// LogIn POST Response /////////////////////
       Requests.post(url2, body: body).then((response) {
-        print('---------2');
-        print(response.content());
         if (response.statusCode == 302) {
-          Requests.get(url5).then((response) {
- print('---------3');
-             print(response.content());
-            Requests.get(url4).then((response) {
-              print('---------4');
-              print(response.content());
-              int numind = response.content().indexOf('lblMobile');
-              int nameind = response.content().indexOf('lblName');
-              int emailind = response.content().indexOf('lblEmail');
-              int valind = response.content().indexOf('lblValidityPeriod');
-              int currind = response.content().indexOf('lblCurrentUsage');
-              int adddresind = response.content().indexOf('lblAddress');
-              int planind = response.content().indexOf('lblPlanName');
-              int sessind = response.content().indexOf('lblTotalData');
-              if (numind != -1) {
-                if (sessind != -1) {
-                  slicedResponse =
-                      response.content().substring(sessind, sessind + 50);
-                  for (i = 0; i < slicedResponse.length; i++)
-                    if (slicedResponse[i] == '>' && startIndex == null)
-                      startIndex = i;
-                    else if (slicedResponse[i] == '<' && endIndex == null)
-                      endIndex = i;
-                  sessionUsage =
-                      slicedResponse.substring(startIndex + 1, endIndex);
-                }
-                if (planind != -1) {
-                  slicedResponse =
-                      response.content().substring(planind, planind + 250);
-                  for (i = 0; i < slicedResponse.length; i++)
-                    if (slicedResponse[i] == '>' && startIndex == null)
-                      startIndex = i;
-                    else if (slicedResponse[i] == '<' && endIndex == null)
-                      endIndex = i;
+//////////////////////////////////// Guage details GET Response //////////
+          Requests.get(url4).then((response) {
+            int index = response.content().indexOf('lblName');
+            if (index != -1) {
+/////////////////////////////////// Name ////////////////////////////////
+              if (index != -1) name = parse(response, index);
 
-                  plan = slicedResponse.substring(startIndex + 1, endIndex);
-                  planMap = planDetails(plan);
-                }
+/////////////////////////////////// SessionUsage ////////////////////////
+              index = response.content().indexOf('lblTotalData');
+              if (index != -1) sessionUsage = parse(response, index);
 
-                if (numind != -1) {
-                  slicedResponse =
-                      response.content().substring(numind, numind + 60);
-                  for (i = 0; i < slicedResponse.length; i++)
-                    if (slicedResponse[i] == '>' && startIndex == null)
-                      startIndex = i;
-                    else if (slicedResponse[i] == '<' && endIndex == null)
-                      endIndex = i;
+/////////////////////////////////// PlanName ///////////////////////////
+              index = response.content().indexOf('lblPlanName');
+              if (index != -1) {
+                plan = parse(response, index);
+                planMap = planDetails(plan);
+              }
 
-                  mobNumber =
-                      slicedResponse.substring(startIndex + 1, endIndex);
-                }
-                {
-                  slicedResponse =
-                      response.content().substring(nameind, nameind + 150);
-                  for (i = 0; i < slicedResponse.length; i++)
-                    if (slicedResponse[i] == '>' && startIndex == null)
-                      startIndex = i;
-                    else if (slicedResponse[i] == '<' && endIndex == null)
-                      endIndex = i;
+/////////////////////////////////// MobileNumber ///////////////////////////
+              index = response.content().indexOf('lblMobile');
+              if (index != -1) mobNumber = parse(response, index);
 
-                  name = slicedResponse.substring(startIndex + 1, endIndex);
-                }
-                if (emailind != -1) {
-                  slicedResponse =
-                      response.content().substring(emailind, emailind + 70);
-                  for (i = 0; i < slicedResponse.length; i++)
-                    if (slicedResponse[i] == '>' && startIndex == null)
-                      startIndex = i;
-                    else if (slicedResponse[i] == '<' && endIndex == null)
-                      endIndex = i;
+/////////////////////////////////// Address ///////////////////////////////
+              index = response.content().indexOf('lblAddress');
+              if (index != -1) address = parse(response, index);
 
-                  email = slicedResponse.substring(startIndex + 1, endIndex);
-                } else
-                  email = mobNumber;
-                {
-                  slicedResponse = response
-                      .content()
-                      .substring(adddresind, adddresind + 200);
-                  for (i = 0; i < slicedResponse.length; i++)
-                    if (slicedResponse[i] == '>' && startIndex == null)
-                      startIndex = i;
-                    else if (slicedResponse[i] == '<' && endIndex == null)
-                      endIndex = i;
+/////////////////////////////////// CurrentUsage ///////////////////////////
+              index = response.content().indexOf('lblCurrentUsage');
+              if (index != -1) currentUsage = parse(response, index);
 
-                  address = slicedResponse.substring(startIndex + 1, endIndex);
-                }
-                if (valind != -1) {
-                  slicedResponse =
-                      response.content().substring(valind, valind + 50);
-                  for (i = 0; i < slicedResponse.length; i++)
-                    if (slicedResponse[i] == '>' && startIndex == null)
-                      startIndex = i;
-                    else if (slicedResponse[i] == '<' && endIndex == null)
-                      endIndex = i;
-                  validityPeriod =
-                      slicedResponse.substring(startIndex + 1, endIndex);
-                } else
-                  validityPeriod = '0 Days';
-                if (currind != -1) {
-                  slicedResponse =
-                      response.content().substring(currind, currind + 50);
-                  for (i = 0; i < slicedResponse.length; i++) {
-                    if (slicedResponse[i] == '>' && startIndex == null)
-                      startIndex = i;
-                    if (slicedResponse[i] == '<' && endIndex == null)
-                      endIndex = i;
-                  }
-                  currentUsage =
-                      slicedResponse.substring(startIndex + 1, endIndex);
-                }
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => HomePage()));
-              } else
-                test();
-            });
+/////////////////////////////////// EmailId ////////////////////////////////
+              index = response.content().indexOf('lblEmail');
+              if (index != -1) email = parse(response, index);
+
+/////////////////////////////////// ValidityPeriod //////////////////////////
+              index = response.content().indexOf('lblValidityPeriod');
+              if (index != -1) validityPeriod = parse(response, index);
+
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => HomePage()));
+            } else
+              test();
           });
         }
       });
     });
+  }
+
+  String parse(Response response, int index, {int offset = 500}) {
+    startIndex = null;
+    endIndex = null;
+    slicedResponse = response.content().substring(index, index + offset);
+    for (i = 0; endIndex == null; i++)
+      if (slicedResponse[i] == '>' && startIndex == null)
+        startIndex = i;
+      else if (slicedResponse[i] == '<' && endIndex == null) endIndex = i;
+    return slicedResponse.substring(startIndex + 1, endIndex);
+  }
+
+  Map<String, dynamic> planDetails(String plan) {
+    var alpha = '';
+    var numero = '';
+    List<String> data = [];
+    for (var i = 0; i < plan.length; i++) {
+      if (plan[i].contains(RegExp(r'[A-Z]'))) {
+        alpha += plan[i];
+        numero != '' ? data.add(numero) : numero = numero;
+        numero = '';
+      }
+      if (plan[i].contains(RegExp(r'[0-9]'))) {
+        numero += plan[i];
+        alpha != '' ? data.add(alpha) : alpha = alpha;
+        alpha = '';
+      }
+    }
+    data.contains(('M')) ? data.remove('M') : alpha = alpha;
+    data.contains(('G')) ? data.remove('G') : alpha = alpha;
+
+    if (data.length == 3) {
+      data.add('30');
+    }
+
+    if (data.contains('FUP'))
+      return {
+        'Type': 'FUP',
+        'Speed': int.parse(data[1]),
+        'Limit': double.parse(data[2]),
+        'Validity': int.parse(data[3])
+      };
+    else if (data.contains('UL'))
+      return {
+        'Type': 'UL30',
+        'Speed': int.parse(data[1]),
+        'Limit': 'NIL',
+        'Validity': 30
+      };
+
+    return {
+      'Type': 'UL',
+      'Speed': int.parse(data[1]),
+      'Limit': 'NIL',
+      'Validity': 'NIL'
+    };
   }
 }

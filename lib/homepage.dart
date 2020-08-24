@@ -178,6 +178,78 @@ class _HomePageState extends State<HomePage> {
                   color: Color(0xffefefef),
                   borderRadius: BorderRadius.circular(10),
                 ),
+                // child: ListTile(
+                //   leading: Icon(Icons.network_check),
+                //   title: Row(
+                //     children: [
+                //       Text(
+                //         'Down: ',
+                //         textAlign: TextAlign.center,
+                //         style: TextStyle(
+                //             fontWeight: FontWeight.w300, color: Colors.black38),
+                //       ),
+                //       Text(
+                //         '45.6 mb/s',
+                //         textAlign: TextAlign.center,
+                //         style: TextStyle(
+                //             fontWeight: FontWeight.w300, color: Colors.black38),
+                //       ),
+                //       Text(
+                //         ' - Up: ',
+                //         textAlign: TextAlign.center,
+                //         style: TextStyle(
+                //             fontWeight: FontWeight.w300, color: Colors.black38),
+                //       ),
+                //       Text(
+                //         '46.7 mb/s',
+                //         textAlign: TextAlign.center,
+                //         style: TextStyle(
+                //             fontWeight: FontWeight.w300, color: Colors.black38),
+                //       )
+                //     ],
+                //   ),
+                //   onTap: () {
+                //     internetSpeedTest.startDownloadTesting(
+                //       onDone: (double transferRate, SpeedUnit unit) {
+                //         setState(() {
+                //           downSpeed = transferRate.toString();
+                //         });
+                //       },
+                //       onProgress: (double percent, double transferRate,
+                //           SpeedUnit unit) {
+                //         setState(() {
+                //           downSpeed = transferRate.toString();
+                //         });
+                //       },
+                //       onError: (String errorMessage, String speedTestError) {
+                //         downSpeed = 'Error';
+                //       },
+                //     );
+                //     internetSpeedTest.startUploadTesting(
+                //       onDone: (double transferRate, SpeedUnit unit) {
+                //         setState(() {
+                //           upSpeed = transferRate.toString();
+                //         });
+                //       },
+                //       onProgress: (double percent, double transferRate,
+                //           SpeedUnit unit) {
+                //         setState(() {
+                //           upSpeed = transferRate.toString();
+                //         });
+                //       },
+                //       onError: (String errorMessage, String speedTestError) {
+                //         upSpeed = 'Error';
+                //       },
+                //     );
+                //   },
+                // ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Color(0xffefefef),
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 child: ListTile(
                   leading: Icon(Icons.account_circle),
                   title: Text(

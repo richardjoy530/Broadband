@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:Broadband/data.dart';
 import 'package:Broadband/homepage.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_speed_test/internet_speed_test.dart';
 import 'package:requests/requests.dart';
 import 'data.dart';
 
@@ -39,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     usernameController = TextEditingController();
     passwordController = TextEditingController();
+    internetSpeedTest = InternetSpeedTest();
     super.initState();
   }
 
@@ -65,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       fontWeight: FontWeight.bold,
                       fontSize: 25,
                       fontFamily: 'Roboto',
-                      color: Color(0xff1F4D84))), 
+                      color: Color(0xff1F4D84))),
               Column(
                 children: [
                   Container(
@@ -119,17 +121,56 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
               Listener(
+                onPointerDown: (pointerDownEvent) {
+                  setState(() {
+                    buttonColor = Color(0xff1F4D84);
+                  });
+                },
                 onPointerUp: (pointerUpEvent) {
+                  buttonColor = Color(0xff0A223f);
                   username = usernameController.text;
                   password = passwordController.text;
                   test();
+                  // internetSpeedTest.startUploadTesting(
+                  //   onDone: (double transferRate, SpeedUnit unit) {
+                  //     print('the transfer rate $transferRate');
+                  //     setState(() {
+                  //       upSpeed = transferRate.toString();
+                  //     });
+                  //   },
+                  //   onProgress:
+                  //       (double percent, double transferRate, SpeedUnit unit) {
+                  //     print(
+                  //         'the transfer rate $transferRate, the percent $percent');
+                  //     setState(() {
+                  //       upSpeed = transferRate.toString();
+                  //     });
+                  //   },
+                  //   onError: (String errorMessage, String speedTestError) {
+                  //       upSpeed = 'Error';
+                  //   },
+                  // );
+                  // internetSpeedTest.startDownloadTesting(
+                  //   onDone: (double transferRate, SpeedUnit unit) {
+                  //     setState(() {
+                  //       downSpeed = transferRate.toString();
+                  //     });
+                  //   },
+                  //   onProgress:
+                  //       (double percent, double transferRate, SpeedUnit unit) {
+                  //       downSpeed = transferRate.toString();
+                  //   },
+                  //   onError: (String errorMessage, String speedTestError) {
+                  //       downSpeed = 'Error';
+                  //   },
+                  // );
                   print([usernameController.text, passwordController.text]);
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width / 2.5,
                   height: 75,
                   decoration: BoxDecoration(
-                    color: Color(0xff0A223f),
+                    color: buttonColor,
                     borderRadius: BorderRadius.all(Radius.circular(50.0)),
                   ),
                   child: Center(
@@ -150,188 +191,160 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> test() async {
-    var url = 'https://myaccount.keralavisionisp.com/Customer/Default.aspx';
+    /// LogIn Page GET Response /////////////////////
     Requests.get(url).then((response) {
-      var viewstateind = response.content().indexOf('__VIEWSTATE');
-      var viewstategeneratorind =
+      print('---------1');
+      print(response.content());
+      int viewstateind = response.content().indexOf('__VIEWSTATE');
+      int viewstategeneratorind =
           response.content().indexOf('__VIEWSTATEGENERATOR');
-      var eventvalidationind = response.content().indexOf('__EVENTVALIDATION');
-      {
-        var viewstatedata =
-            response.content().substring(viewstateind, viewstateind + 4500);
-        int startIndex;
-        int endIndex;
-        for (var i = 0; i < viewstatedata.length; i++) {
-          if (viewstatedata[i] == '/' && startIndex == null) startIndex = i;
-          if (viewstatedata[i] == '"' && endIndex == null && startIndex != null)
-            endIndex = i;
-        }
-        setState(() {
-          viewstate = viewstatedata.substring(startIndex, endIndex);
-        });
-      }
-      {
-        var viewstategeneratordata = response
-            .content()
-            .substring(viewstategeneratorind, viewstategeneratorind + 100);
-        int startIndex = 55;
-        int endIndex = 63;
-        setState(() {
-          viewstategenerator =
-              viewstategeneratordata.substring(startIndex, endIndex);
-        });
-      }
-      {
-        var eventvalidationdata = response
-            .content()
-            .substring(eventvalidationind, eventvalidationind + 300);
-        int startIndex;
-        int endIndex;
-        for (var i = 0; i < eventvalidationdata.length; i++) {
-          if (eventvalidationdata[i] == '/' && startIndex == null)
-            startIndex = i;
-          if (eventvalidationdata[i] == '"' &&
-              endIndex == null &&
-              startIndex != null) endIndex = i;
-        }
-        setState(() {
-          eventvalidation = eventvalidationdata.substring(startIndex, endIndex);
-        });
-      }
+      int eventvalidationind = response.content().indexOf('__EVENTVALIDATION');
 
-      url =
-          'https://myaccount.keralavisionisp.com/Customer/PortalLogin.aspx?h8=1';
+//////////////////////////////////////// ViewState /////////////////////
+      slicedResponse =
+          response.content().substring(viewstateind, viewstateind + 4500);
+      for (i = 0; i < slicedResponse.length; i++)
+        if (slicedResponse[i] == '/' && startIndex == null)
+          startIndex = i;
+        else if (slicedResponse[i] == '"' &&
+            endIndex == null &&
+            startIndex != null) endIndex = i;
+      viewstate = slicedResponse.substring(startIndex, endIndex);
 
-      Requests.post(url,
-              body: body, bodyEncoding: RequestBodyEncoding.FormURLEncoded)
-          .then((response) {
+//////////////////////////////// ViewstateGenerator /////////////////////
+      slicedResponse = response
+          .content()
+          .substring(viewstategeneratorind, viewstategeneratorind + 100);
+      startIndex = 55;
+      endIndex = 63;
+      viewstategenerator = slicedResponse.substring(startIndex, endIndex);
+
+/////////////////////////////////// EventValidation /////////////////////
+      slicedResponse = response
+          .content()
+          .substring(eventvalidationind, eventvalidationind + 300);
+      for (var i = 0; i < slicedResponse.length; i++)
+        if (slicedResponse[i] == '/' && startIndex == null)
+          startIndex = i;
+        else if (slicedResponse[i] == '"' &&
+            endIndex == null &&
+            startIndex != null) endIndex = i;
+      eventvalidation = slicedResponse.substring(startIndex, endIndex);
+
+      /// LogIn POST Response /////////////////////
+      Requests.post(url2, body: body).then((response) {
+        print('---------2');
+        print(response.content());
         if (response.statusCode == 302) {
-          url =
-              'https://myaccount.keralavisionisp.com/Customer/HomePage.aspx?Id=147205';
-          Requests.get(url).then((response) {
-            url = 'https://myaccount.keralavisionisp.com/Customer/Gauge.aspx';
-            Requests.get(url).then((response) {
-              var numind = response.content().indexOf('lblMobile');
-              var nameind = response.content().indexOf('lblName');
-              var emailind = response.content().indexOf('lblEmail');
-              var valind = response.content().indexOf('lblValidityPeriod');
-              var currind = response.content().indexOf('lblCurrentUsage');
-              var adddresind = response.content().indexOf('lblAddress');
-              var planind = response.content().indexOf('lblPlanName');
-              var sessind = response.content().indexOf('lblTotalData');
+          Requests.get(url5).then((response) {
+ print('---------3');
+             print(response.content());
+            Requests.get(url4).then((response) {
+              print('---------4');
+              print(response.content());
+              int numind = response.content().indexOf('lblMobile');
+              int nameind = response.content().indexOf('lblName');
+              int emailind = response.content().indexOf('lblEmail');
+              int valind = response.content().indexOf('lblValidityPeriod');
+              int currind = response.content().indexOf('lblCurrentUsage');
+              int adddresind = response.content().indexOf('lblAddress');
+              int planind = response.content().indexOf('lblPlanName');
+              int sessind = response.content().indexOf('lblTotalData');
               if (numind != -1) {
-                {
-                  var sessdata =
+                if (sessind != -1) {
+                  slicedResponse =
                       response.content().substring(sessind, sessind + 50);
-                  int startIndex;
-                  int endIndex;
-                  for (var i = 0; i < sessdata.length; i++) {
-                    if (sessdata[i] == '>' && startIndex == null)
+                  for (i = 0; i < slicedResponse.length; i++)
+                    if (slicedResponse[i] == '>' && startIndex == null)
                       startIndex = i;
-                    if (sessdata[i] == '<' && endIndex == null) endIndex = i;
-                  }
-                  setState(() {
-                    sessionUsage = sessdata.substring(startIndex + 1, endIndex);
-                  });
+                    else if (slicedResponse[i] == '<' && endIndex == null)
+                      endIndex = i;
+                  sessionUsage =
+                      slicedResponse.substring(startIndex + 1, endIndex);
                 }
-                {
-                  var plandata =
+                if (planind != -1) {
+                  slicedResponse =
                       response.content().substring(planind, planind + 250);
-                  int startIndex;
-                  int endIndex;
-                  for (var i = 0; i < plandata.length; i++) {
-                    if (plandata[i] == '>' && startIndex == null)
+                  for (i = 0; i < slicedResponse.length; i++)
+                    if (slicedResponse[i] == '>' && startIndex == null)
                       startIndex = i;
-                    if (plandata[i] == '<' && endIndex == null) endIndex = i;
-                  }
-                  setState(() {
-                    plan = plandata.substring(startIndex + 1, endIndex);
-                  });
+                    else if (slicedResponse[i] == '<' && endIndex == null)
+                      endIndex = i;
+
+                  plan = slicedResponse.substring(startIndex + 1, endIndex);
+                  planMap = planDetails(plan);
                 }
-                planMap = planDetails(plan);
-                {
-                  var numdata =
+
+                if (numind != -1) {
+                  slicedResponse =
                       response.content().substring(numind, numind + 60);
-                  int startIndex;
-                  int endIndex;
-                  for (var i = 0; i < numdata.length; i++) {
-                    if (numdata[i] == '>' && startIndex == null) startIndex = i;
-                    if (numdata[i] == '<' && endIndex == null) endIndex = i;
-                  }
-                  setState(() {
-                    mobNumber = numdata.substring(startIndex + 1, endIndex);
-                  });
+                  for (i = 0; i < slicedResponse.length; i++)
+                    if (slicedResponse[i] == '>' && startIndex == null)
+                      startIndex = i;
+                    else if (slicedResponse[i] == '<' && endIndex == null)
+                      endIndex = i;
+
+                  mobNumber =
+                      slicedResponse.substring(startIndex + 1, endIndex);
                 }
                 {
-                  var namedata =
+                  slicedResponse =
                       response.content().substring(nameind, nameind + 150);
-                  int startIndex;
-                  int endIndex;
-                  for (var i = 0; i < namedata.length; i++) {
-                    if (namedata[i] == '>' && startIndex == null)
+                  for (i = 0; i < slicedResponse.length; i++)
+                    if (slicedResponse[i] == '>' && startIndex == null)
                       startIndex = i;
-                    if (namedata[i] == '<' && endIndex == null) endIndex = i;
-                  }
-                  setState(() {
-                    name = namedata.substring(startIndex + 1, endIndex);
-                  });
+                    else if (slicedResponse[i] == '<' && endIndex == null)
+                      endIndex = i;
+
+                  name = slicedResponse.substring(startIndex + 1, endIndex);
                 }
-                {
-                  var emaildata =
+                if (emailind != -1) {
+                  slicedResponse =
                       response.content().substring(emailind, emailind + 70);
-                  int startIndex;
-                  int endIndex;
-                  for (var i = 0; i < emaildata.length; i++) {
-                    if (emaildata[i] == '>' && startIndex == null)
+                  for (i = 0; i < slicedResponse.length; i++)
+                    if (slicedResponse[i] == '>' && startIndex == null)
                       startIndex = i;
-                    if (emaildata[i] == '<' && endIndex == null) endIndex = i;
-                  }
-                  setState(() {
-                    email = emaildata.substring(startIndex + 1, endIndex);
-                  });
-                }
+                    else if (slicedResponse[i] == '<' && endIndex == null)
+                      endIndex = i;
+
+                  email = slicedResponse.substring(startIndex + 1, endIndex);
+                } else
+                  email = mobNumber;
                 {
-                  var addressdata = response
+                  slicedResponse = response
                       .content()
                       .substring(adddresind, adddresind + 200);
-                  int startIndex;
-                  int endIndex;
-                  for (var i = 0; i < addressdata.length; i++) {
-                    if (addressdata[i] == '>' && startIndex == null)
+                  for (i = 0; i < slicedResponse.length; i++)
+                    if (slicedResponse[i] == '>' && startIndex == null)
                       startIndex = i;
-                    if (addressdata[i] == '<' && endIndex == null) endIndex = i;
-                  }
-                  setState(() {
-                    address = addressdata.substring(startIndex + 1, endIndex);
-                  });
+                    else if (slicedResponse[i] == '<' && endIndex == null)
+                      endIndex = i;
+
+                  address = slicedResponse.substring(startIndex + 1, endIndex);
                 }
-                {
-                  var valdata =
+                if (valind != -1) {
+                  slicedResponse =
                       response.content().substring(valind, valind + 50);
-                  int startIndex;
-                  int endIndex;
-                  for (var i = 0; i < valdata.length; i++) {
-                    if (valdata[i] == '>' && startIndex == null) startIndex = i;
-                    if (valdata[i] == '<' && endIndex == null) endIndex = i;
-                  }
-                  setState(() {
-                    validityPeriod =
-                        valdata.substring(startIndex + 1, endIndex);
-                  });
-                }
-                {
-                  var currdata =
-                      response.content().substring(currind, currind + 50);
-                  int startIndex;
-                  int endIndex;
-                  for (var i = 0; i < currdata.length; i++) {
-                    if (currdata[i] == '>' && startIndex == null)
+                  for (i = 0; i < slicedResponse.length; i++)
+                    if (slicedResponse[i] == '>' && startIndex == null)
                       startIndex = i;
-                    if (currdata[i] == '<' && endIndex == null) endIndex = i;
+                    else if (slicedResponse[i] == '<' && endIndex == null)
+                      endIndex = i;
+                  validityPeriod =
+                      slicedResponse.substring(startIndex + 1, endIndex);
+                } else
+                  validityPeriod = '0 Days';
+                if (currind != -1) {
+                  slicedResponse =
+                      response.content().substring(currind, currind + 50);
+                  for (i = 0; i < slicedResponse.length; i++) {
+                    if (slicedResponse[i] == '>' && startIndex == null)
+                      startIndex = i;
+                    if (slicedResponse[i] == '<' && endIndex == null)
+                      endIndex = i;
                   }
-                  setState(() {
-                    currentUsage = currdata.substring(startIndex + 1, endIndex);
-                  });
+                  currentUsage =
+                      slicedResponse.substring(startIndex + 1, endIndex);
                 }
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => HomePage()));

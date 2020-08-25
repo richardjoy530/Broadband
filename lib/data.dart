@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+SharedPreferences prefs;
+bool remember = false;
+bool check = true;
 int startIndex;
 int endIndex;
 int i = 0;
@@ -23,7 +27,9 @@ String address;
 String validityPeriod;
 String currentUsage = '0000000000000000';
 String sessionUsage = '00000000000000';
+String accountNum;
 String plan;
+String macAddress = 'Not Registered';
 
 ////////////////////////////// Maps ////////////////////////////////////////////
 Map<String, dynamic> planMap;

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:Broadband/data.dart';
 import 'package:Broadband/homepage.dart';
+import 'package:Broadband/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:requests/requests.dart';
 import 'data.dart';
@@ -19,14 +20,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: LoadingPage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -37,6 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+    prefs.setString('username', 'null');
     usernameController = TextEditingController();
     passwordController = TextEditingController();
     super.initState();
@@ -128,10 +128,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   buttonColor = Color(0xff0A223f);
                   username = usernameController.text;
                   password = passwordController.text;
-                  test();
+                  test(context);
                   // username = 'drradhakrishnan1647';
                   // password = 'drradhakrishnan1647';
                   print([usernameController.text, passwordController.text]);
+                  prefs.setString('username', username);
+                  prefs.setString('password', password);
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width / 2.5,
@@ -141,13 +143,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     borderRadius: BorderRadius.all(Radius.circular(50.0)),
                   ),
                   child: Center(
-                      child: Text(
-                    'Login',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontFamily: 'Roboto'),
-                  )),
+                    child: Text(
+                      'Login',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontFamily: 'Roboto'),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -156,155 +159,195 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
 
-  Future<void> test() async {
-    /// LogIn Page GET Response /////////////////////
-    Requests.get(url).then((response) {
-      int viewstateind = response.content().indexOf('__VIEWSTATE');
-      int viewstategeneratorind =
-          response.content().indexOf('__VIEWSTATEGENERATOR');
-      int eventvalidationind = response.content().indexOf('__EVENTVALIDATION');
+String parse(Response response, int index, {int offset = 500}) {
+  startIndex = null;
+  endIndex = null;
+  slicedResponse = response.content().substring(index, index + offset);
+  for (i = 0; endIndex == null; i++)
+    if (slicedResponse[i] == '>' && startIndex == null)
+      startIndex = i;
+    else if (slicedResponse[i] == '<' && endIndex == null) endIndex = i;
+  return slicedResponse.substring(startIndex + 1, endIndex);
+}
 
-//////////////////////////////////////// ViewState /////////////////////
-      slicedResponse =
-          response.content().substring(viewstateind, viewstateind + 4500);
-      startIndex = null;
-      endIndex = null;
-      for (i = 0; endIndex == null; i++)
-        if (slicedResponse[i] == '/' && startIndex == null)
-          startIndex = i;
-        else if (slicedResponse[i] == '"' &&
-            endIndex == null &&
-            startIndex != null) endIndex = i;
-      viewstate = slicedResponse.substring(startIndex, endIndex);
-
-//////////////////////////////// ViewstateGenerator /////////////////////
-      slicedResponse = response
-          .content()
-          .substring(viewstategeneratorind, viewstategeneratorind + 100);
-      startIndex = 55;
-      endIndex = 63;
-      viewstategenerator = slicedResponse.substring(startIndex, endIndex);
-
-/////////////////////////////////// EventValidation /////////////////////
-      slicedResponse = response
-          .content()
-          .substring(eventvalidationind, eventvalidationind + 300);
-      startIndex = null;
-      endIndex = null;
-      for (var i = 0; endIndex == null; i++)
-        if (slicedResponse[i] == '/' && startIndex == null)
-          startIndex = i;
-        else if (slicedResponse[i] == '"' &&
-            endIndex == null &&
-            startIndex != null) endIndex = i;
-      eventvalidation = slicedResponse.substring(startIndex, endIndex);
-
-      //// LogIn POST Response /////////////////////
-      Requests.post(url2, body: body).then((response) {
-        if (response.statusCode == 302) {
-//////////////////////////////////// Guage details GET Response //////////
-          Requests.get(url4).then((response) {
-            int index = response.content().indexOf('lblName');
-            if (index != -1) {
-/////////////////////////////////// Name ////////////////////////////////
-              if (index != -1) name = parse(response, index);
-
-/////////////////////////////////// SessionUsage ////////////////////////
-              index = response.content().indexOf('lblTotalData');
-              if (index != -1) sessionUsage = parse(response, index);
-
-/////////////////////////////////// PlanName ///////////////////////////
-              index = response.content().indexOf('lblPlanName');
-              if (index != -1) {
-                plan = parse(response, index);
-                planMap = planDetails(plan);
-              }
-
-/////////////////////////////////// MobileNumber ///////////////////////////
-              index = response.content().indexOf('lblMobile');
-              if (index != -1) mobNumber = parse(response, index);
-
-/////////////////////////////////// Address ///////////////////////////////
-              index = response.content().indexOf('lblAddress');
-              if (index != -1) address = parse(response, index);
-
-/////////////////////////////////// CurrentUsage ///////////////////////////
-              index = response.content().indexOf('lblCurrentUsage');
-              if (index != -1) currentUsage = parse(response, index);
-
-/////////////////////////////////// EmailId ////////////////////////////////
-              index = response.content().indexOf('lblEmail');
-              if (index != -1) email = parse(response, index);
-
-/////////////////////////////////// ValidityPeriod //////////////////////////
-              index = response.content().indexOf('lblValidityPeriod');
-              if (index != -1) validityPeriod = parse(response, index);
-
-              Navigator.pushReplacement(
-                  context, MaterialPageRoute(builder: (context) => HomePage()));
-            } else
-              test();
-          });
-        }
-      });
-    });
-  }
-
-  String parse(Response response, int index, {int offset = 500}) {
-    startIndex = null;
-    endIndex = null;
-    slicedResponse = response.content().substring(index, index + offset);
-    for (i = 0; endIndex == null; i++)
-      if (slicedResponse[i] == '>' && startIndex == null)
-        startIndex = i;
-      else if (slicedResponse[i] == '<' && endIndex == null) endIndex = i;
-    return slicedResponse.substring(startIndex + 1, endIndex);
-  }
-
-  Map<String, dynamic> planDetails(String plan) {
-    var alpha = '';
-    var numero = '';
-    List<String> data = [];
-    for (var i = 0; i < plan.length; i++) {
-      if (plan[i].contains(RegExp(r'[A-Z]'))) {
-        alpha += plan[i];
-        numero != '' ? data.add(numero) : numero = numero;
-        numero = '';
-      }
-      if (plan[i].contains(RegExp(r'[0-9]'))) {
-        numero += plan[i];
-        alpha != '' ? data.add(alpha) : alpha = alpha;
-        alpha = '';
-      }
+Map<String, dynamic> planDetails(String plan) {
+  //plan = 'UL1Y10M';
+  var alpha = '';
+  var numero = '';
+  List<String> data = [];
+  for (var i = 0; i < plan.length; i++) {
+    if (plan[i].contains(RegExp(r'[A-Z]'))) {
+      alpha += plan[i];
+      numero != '' ? data.add(numero) : numero = numero;
+      numero = '';
     }
-    data.contains(('M')) ? data.remove('M') : alpha = alpha;
-    data.contains(('G')) ? data.remove('G') : alpha = alpha;
+    if (plan[i].contains(RegExp(r'[0-9]'))) {
+      numero += plan[i];
+      alpha != '' ? data.add(alpha) : alpha = alpha;
+      alpha = '';
+    }
+  }
+  data.contains(('M')) ? data.remove('M') : alpha = alpha;
+  data.contains(('G')) ? data.remove('G') : alpha = alpha;
 
+  if (data.contains('FUP') || data.contains('LCOCPFUP')) {
+    if (data.contains('Y')) {
+      data.contains(('Y')) ? data.remove('Y') : alpha = alpha;
+
+      return {
+        'Type': 'FUP1Y',
+        'Speed': int.parse(data[2]),
+        'Limit': double.parse(data[3]),
+        'Validity': 360
+      };
+    }
     if (data.length == 3) {
       data.add('30');
     }
-
-    if (data.contains('FUP'))
+    return {
+      'Type': 'FUP',
+      'Speed': int.parse(data[1]),
+      'Limit': double.parse(data[2]),
+      'Validity': int.parse(data[3])
+    };
+  } else if (data.contains('UL')) {
+    if (data.contains('Y')) {
+      data.contains(('Y')) ? data.remove('Y') : alpha = alpha;
       return {
-        'Type': 'FUP',
-        'Speed': int.parse(data[1]),
-        'Limit': double.parse(data[2]),
-        'Validity': int.parse(data[3])
+        'Type': 'UL',
+        'Speed': int.parse(data[2]),
+        'Limit': null,
+        'Validity': 365
       };
-    else if (data.contains('UL'))
-      return {
-        'Type': 'UL30',
-        'Speed': int.parse(data[1]),
-        'Limit': 'NIL',
-        'Validity': 30
-      };
-
+    }
     return {
       'Type': 'UL',
       'Speed': int.parse(data[1]),
-      'Limit': 'NIL',
-      'Validity': 'NIL'
+      'Limit': null,
+      'Validity': 30
     };
   }
+
+  return {
+    'Type': 'UL',
+    'Speed': int.parse(data[1]),
+    'Limit': 'NIL',
+    'Validity': 'NIL'
+  };
+}
+
+Future<void> test(BuildContext context) async {
+  /// LogIn Page GET Response /////////////////////
+  Requests.get(url).then((response) {
+    int viewstateind = response.content().indexOf('__VIEWSTATE');
+    int viewstategeneratorind =
+        response.content().indexOf('__VIEWSTATEGENERATOR');
+    int eventvalidationind = response.content().indexOf('__EVENTVALIDATION');
+
+//////////////////////////////////////// ViewState /////////////////////
+    slicedResponse =
+        response.content().substring(viewstateind, viewstateind + 4500);
+    startIndex = null;
+    endIndex = null;
+    for (i = 0; endIndex == null; i++)
+      if (slicedResponse[i] == '/' && startIndex == null)
+        startIndex = i;
+      else if (slicedResponse[i] == '"' &&
+          endIndex == null &&
+          startIndex != null) endIndex = i;
+    viewstate = slicedResponse.substring(startIndex, endIndex);
+
+//////////////////////////////// ViewstateGenerator /////////////////////
+    slicedResponse = response
+        .content()
+        .substring(viewstategeneratorind, viewstategeneratorind + 100);
+    startIndex = 55;
+    endIndex = 63;
+    viewstategenerator = slicedResponse.substring(startIndex, endIndex);
+
+/////////////////////////////////// EventValidation /////////////////////
+    slicedResponse = response
+        .content()
+        .substring(eventvalidationind, eventvalidationind + 300);
+    startIndex = null;
+    endIndex = null;
+    for (var i = 0; endIndex == null; i++)
+      if (slicedResponse[i] == '/' && startIndex == null)
+        startIndex = i;
+      else if (slicedResponse[i] == '"' &&
+          endIndex == null &&
+          startIndex != null) endIndex = i;
+    eventvalidation = slicedResponse.substring(startIndex, endIndex);
+
+    //// LogIn POST Response /////////////////////
+    Requests.post(url2, body: body).then((response) {
+      if (response.statusCode == 302) {
+//////////////////////////////////// Guage details GET Response //////////
+        Requests.get(url4).then((response) {
+          int index = response.content().indexOf('lblName');
+          if (index != -1) {
+/////////////////////////////////// Name ////////////////////////////////
+            if (index != -1) name = parse(response, index);
+
+/////////////////////////////////// SessionUsage ////////////////////////
+            index = response.content().indexOf('lblTotalData');
+            if (index != -1)
+              sessionUsage = parse(response, index);
+            else
+              sessionUsage = "00000000000000000";
+
+/////////////////////////////////// PlanName ///////////////////////////
+            index = response.content().indexOf('lblPlanName');
+            if (index != -1) {
+              plan = parse(response, index);
+              planMap = planDetails(plan);
+            }
+
+/////////////////////////////////// MobileNumber ///////////////////////////
+            index = response.content().indexOf('lblMobile');
+            if (index != -1)
+              mobNumber = parse(response, index);
+            else
+              mobNumber = 'Not Listed';
+
+/////////////////////////////////// AccountNumber ///////////////////////////
+            index = response.content().indexOf('lblAccountNo');
+            if (index != -1) accountNum = parse(response, index);
+
+/////////////////////////////////// Address ///////////////////////////////
+            index = response.content().indexOf('lblAddress');
+            if (index != -1) address = parse(response, index);
+
+/////////////////////////////////// MacAddress ///////////////////////////////
+            index = response.content().indexOf('lblMacAddress');
+            if (index != -1)
+              macAddress = parse(response, index);
+            else
+              macAddress = 'Not Registered';
+
+/////////////////////////////////// CurrentUsage ///////////////////////////
+            index = response.content().indexOf('lblCurrentUsage');
+            if (index != -1) currentUsage = parse(response, index);
+
+/////////////////////////////////// EmailId ////////////////////////////////
+            index = response.content().indexOf('lblEmail');
+            if (index != -1)
+              email = parse(response, index);
+            else
+              email = mobNumber;
+
+/////////////////////////////////// ValidityPeriod //////////////////////////
+            index = response.content().indexOf('lblValidityPeriod');
+            if (index != -1) validityPeriod = parse(response, index);
+
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => HomePage()));
+          } else
+            test(context);
+        });
+      }
+    });
+  });
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 import 'data.dart';
+import 'main.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -37,12 +38,14 @@ class _HomePageState extends State<HomePage> {
                         Icons.menu,
                         color: Colors.black,
                       ),
-                      onPressed: null)
+                      onPressed: () {
+                        onMenuPressed(context);
+                      })
                 ],
               ),
               SleekCircularSlider(
-                initialValue: planMap['Type'] == 'UL30'
-                    ? 30 -
+                initialValue: planMap['Type'] == 'UL'
+                    ? planMap['Validity'] -
                         double.parse(validityPeriod.substring(
                             0, validityPeriod.length - 4))
                     : (double.parse(
@@ -50,7 +53,9 @@ class _HomePageState extends State<HomePage> {
                         ) +
                         double.parse(sessionUsage.substring(
                             6, sessionUsage.length - 3))),
-                max: planMap['Type'] == 'UL30' ? 30 : planMap['Limit'],
+                max: planMap['Type'] == 'UL'
+                    ? double.parse(planMap['Validity'].toString())
+                    : double.parse(planMap['Limit'].toString()),
                 appearance: CircularSliderAppearance(
                   size: MediaQuery.of(context).size.width / 1.5,
                   startAngle: -90,
@@ -71,15 +76,25 @@ class _HomePageState extends State<HomePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              (30 - percentage.round()).toString(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            planMap['Type'] == 'UL30'
+                            planMap['Type'] == 'UL'
+                                ? Text(
+                                    (planMap['Validity'] - percentage.round())
+                                        .toString(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                : Text(
+                                    percentage.toStringAsFixed(2),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                            planMap['Type'] == 'UL'
                                 ? Text(
                                     ' Days',
                                     textAlign: TextAlign.center,
@@ -98,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                                   )
                           ],
                         ),
-                        planMap['Type'] == 'UL30'
+                        planMap['Type'] == 'UL'
                             ? Text(
                                 'Remaining',
                                 textAlign: TextAlign.center,
@@ -132,7 +147,7 @@ class _HomePageState extends State<HomePage> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Center(
-                        child: planMap['Type'] == 'UL30'
+                        child: planMap['Type'] == 'UL'
                             ? Column(
                                 children: [
                                   Text(
@@ -197,7 +212,7 @@ class _HomePageState extends State<HomePage> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Center(
-                        child: planMap['Type'] == 'UL30'
+                        child: planMap['Type'] == 'UL'
                             ? Column(
                                 children: [
                                   Text(
@@ -237,78 +252,79 @@ class _HomePageState extends State<HomePage> {
                   )
                 ],
               ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: Color(0xffefefef),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: ListTile(
-                  leading: Icon(Icons.network_check),
-                  title: Row(
-                    children: [
-                      Text(
-                        'Down: ',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w300, color: Colors.black38),
-                      ),
-                      Text(
-                        '45.6 mb/s',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w300, color: Colors.black38),
-                      ),
-                      Text(
-                        ' - Up: ',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w300, color: Colors.black38),
-                      ),
-                      Text(
-                        '46.7 mb/s',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w300, color: Colors.black38),
-                      )
-                    ],
-                  ),
-                  onTap: () {
-                    // internetSpeedTest.startDownloadTesting(
-                    //   onDone: (double transferRate, SpeedUnit unit) {
-                    //     setState(() {
-                    //       downSpeed = transferRate.toString();
-                    //     });
-                    //   },
-                    //   onProgress: (double percent, double transferRate,
-                    //       SpeedUnit unit) {
-                    //     setState(() {
-                    //       downSpeed = transferRate.toString();
-                    //     });
-                    //   },
-                    //   onError: (String errorMessage, String speedTestError) {
-                    //     downSpeed = 'Error';
-                    //   },
-                    // );
-                    // internetSpeedTest.startUploadTesting(
-                    //   onDone: (double transferRate, SpeedUnit unit) {
-                    //     setState(() {
-                    //       upSpeed = transferRate.toString();
-                    //     });
-                    //   },
-                    //   onProgress: (double percent, double transferRate,
-                    //       SpeedUnit unit) {
-                    //     setState(() {
-                    //       upSpeed = transferRate.toString();
-                    //     });
-                    //   },
-                    //   onError: (String errorMessage, String speedTestError) {
-                    //     upSpeed = 'Error';
-                    //   },
-                    // );
-                  },
-                ),
-              ),
+              // Container(
+              //   margin: EdgeInsets.symmetric(horizontal: 20),
+              //   decoration: BoxDecoration(
+              //     color: Color(0xffefefef),
+              //     borderRadius: BorderRadius.circular(10),
+              //   ),
+              //   child: ListTile(
+              //     leading: Icon(Icons.network_check),
+              //     title: Row(
+              //       children: [
+              //         Text(
+              //           'Down: ',
+              //           textAlign: TextAlign.center,
+              //           style: TextStyle(
+              //               fontWeight: FontWeight.w300, color: Colors.black38),
+              //         ),
+              //         Text(
+              //           '45.6 mb/s',
+              //           textAlign: TextAlign.center,
+              //           style: TextStyle(
+              //               fontWeight: FontWeight.w300, color: Colors.black38),
+              //         ),
+              //         Text(
+              //           ' - Up: ',
+              //           textAlign: TextAlign.center,
+              //           style: TextStyle(
+              //               fontWeight: FontWeight.w300, color: Colors.black38),
+              //         ),
+              //         Text(
+              //           '46.7 mb/s',
+              //           textAlign: TextAlign.center,
+              //           style: TextStyle(
+              //               fontWeight: FontWeight.w300, color: Colors.black38),
+              //         )
+              //       ],
+              //     ),
+              //     onTap: () {
+              //       // internetSpeedTest.startDownloadTesting(
+              //       //   onDone: (double transferRate, SpeedUnit unit) {
+              //       //     setState(() {
+              //       //       downSpeed = transferRate.toString();
+              //       //     });
+              //       //   },
+              //       //   onProgress: (double percent, double transferRate,
+              //       //       SpeedUnit unit) {
+              //       //     setState(() {
+              //       //       downSpeed = transferRate.toString();
+              //       //     });
+              //       //   },
+              //       //   onError: (String errorMessage, String speedTestError) {
+              //       //     downSpeed = 'Error';
+              //       //   },
+              //       // );
+              //       // internetSpeedTest.startUploadTesting(
+              //       //   onDone: (double transferRate, SpeedUnit unit) {
+              //       //     setState(() {
+              //       //       upSpeed = transferRate.toString();
+              //       //     });
+              //       //   },
+              //       //   onProgress: (double percent, double transferRate,
+              //       //       SpeedUnit unit) {
+              //       //     setState(() {
+              //       //       upSpeed = transferRate.toString();
+              //       //     });
+              //       //   },
+              //       //   onError: (String errorMessage, String speedTestError) {
+              //       //     upSpeed = 'Error';
+              //       //   },
+              //       // );
+              //     },
+              //   ),
+              // ),
+
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
@@ -321,6 +337,7 @@ class _HomePageState extends State<HomePage> {
                     name[0].toUpperCase() + name.substring(1).toLowerCase(),
                   ),
                   subtitle: Text(email),
+                  onTap: () {},
                 ),
               )
             ],
@@ -328,5 +345,62 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  void onMenuPressed(BuildContext context) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
+        ),
+        builder: (context) {
+          return Wrap(
+            children: <Widget>[
+              Divider(
+                thickness: 2,
+                indent: MediaQuery.of(context).size.width / 3,
+                endIndent: MediaQuery.of(context).size.width / 3,
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.access_time,
+                ),
+                title: Text('Plan'),
+                subtitle: Text(plan),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.confirmation_num,
+                ),
+                title: Text('KV Account Number'),
+                subtitle: Text(accountNum),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(Icons.router),
+                title: Text('MAC Address'),
+                subtitle: Text(macAddress),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(Icons.info),
+                title: Text('About'),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(Icons.logout),
+                title: Text('Log Out'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => MyHomePage()));
+                },
+              ),
+            ],
+          );
+        });
   }
 }

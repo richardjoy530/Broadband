@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:internet_speed_test/internet_speed_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SharedPreferences prefs;
+InternetSpeedTest internetSpeedTest;
+
+String downSpeed = 'Test';
+String upSpeed = 'Test';
+
 bool remember = false;
 bool check = true;
 int startIndex;

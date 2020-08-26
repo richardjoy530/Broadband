@@ -4,6 +4,7 @@ import 'package:Broadband/data.dart';
 import 'package:Broadband/homepage.dart';
 import 'package:Broadband/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:requests/requests.dart';
 import 'data.dart';
 
@@ -125,15 +126,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
                 onPointerUp: (pointerUpEvent) {
-                  buttonColor = Color(0xff0A223f);
+                  setState(() {
+                    buttonColor = Color(0xff0A223f);
+                  });
                   username = usernameController.text;
                   password = passwordController.text;
                   test(context);
-                  // username = 'drradhakrishnan1647';
-                  // password = 'drradhakrishnan1647';
                   print([usernameController.text, passwordController.text]);
-                  prefs.setString('username', username);
-                  prefs.setString('password', password);
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width / 2.5,
@@ -282,12 +281,17 @@ Future<void> test(BuildContext context) async {
     eventvalidation = slicedResponse.substring(startIndex, endIndex);
 
     //// LogIn POST Response /////////////////////
+    body['txtUserName'] = username;
+    body['txtPassword'] = password;
     Requests.post(url2, body: body).then((response) {
       if (response.statusCode == 302) {
 //////////////////////////////////// Guage details GET Response //////////
         Requests.get(url4).then((response) {
           int index = response.content().indexOf('lblName');
           if (index != -1) {
+            /////////////// Save LogIn Id ////////////////////////////////
+            prefs.setString('username', username);
+            prefs.setString('password', password);
 /////////////////////////////////// Name ////////////////////////////////
             if (index != -1) name = parse(response, index);
 
@@ -344,10 +348,19 @@ Future<void> test(BuildContext context) async {
 
             Navigator.pushReplacement(
                 context, MaterialPageRoute(builder: (context) => HomePage()));
-          } else
+          } else {
+            Fluttertoast.showToast(
+                msg: 'Trying again',
+                timeInSecForIosWeb: 2,
+                backgroundColor: Color(0x31000000));
             test(context);
+          }
         });
-      }
+      } else
+        Fluttertoast.showToast(
+            msg: 'Login Failed',
+            timeInSecForIosWeb: 2,
+            backgroundColor: Color(0x31000000));
     });
   });
 }

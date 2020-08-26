@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:internet_speed_test/callbacks_enum.dart';
+import 'package:internet_speed_test/internet_speed_test.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 import 'data.dart';
@@ -10,6 +12,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    internetSpeedTest = InternetSpeedTest();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,9 +53,8 @@ class _HomePageState extends State<HomePage> {
               ),
               SleekCircularSlider(
                 initialValue: planMap['Type'] == 'UL'
-                    ? planMap['Validity'] -
-                        double.parse(validityPeriod.substring(
-                            0, validityPeriod.length - 4))
+                    ? double.parse(
+                        validityPeriod.substring(0, validityPeriod.length - 4))
                     : (double.parse(
                           currentUsage.substring(0, currentUsage.length - 3),
                         ) +
@@ -78,8 +85,7 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             planMap['Type'] == 'UL'
                                 ? Text(
-                                    (planMap['Validity'] - percentage.round())
-                                        .toString(),
+                                    (percentage.round()).toString(),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 30,
@@ -252,79 +258,79 @@ class _HomePageState extends State<HomePage> {
                   )
                 ],
               ),
-              // Container(
-              //   margin: EdgeInsets.symmetric(horizontal: 20),
-              //   decoration: BoxDecoration(
-              //     color: Color(0xffefefef),
-              //     borderRadius: BorderRadius.circular(10),
-              //   ),
-              //   child: ListTile(
-              //     leading: Icon(Icons.network_check),
-              //     title: Row(
-              //       children: [
-              //         Text(
-              //           'Down: ',
-              //           textAlign: TextAlign.center,
-              //           style: TextStyle(
-              //               fontWeight: FontWeight.w300, color: Colors.black38),
-              //         ),
-              //         Text(
-              //           '45.6 mb/s',
-              //           textAlign: TextAlign.center,
-              //           style: TextStyle(
-              //               fontWeight: FontWeight.w300, color: Colors.black38),
-              //         ),
-              //         Text(
-              //           ' - Up: ',
-              //           textAlign: TextAlign.center,
-              //           style: TextStyle(
-              //               fontWeight: FontWeight.w300, color: Colors.black38),
-              //         ),
-              //         Text(
-              //           '46.7 mb/s',
-              //           textAlign: TextAlign.center,
-              //           style: TextStyle(
-              //               fontWeight: FontWeight.w300, color: Colors.black38),
-              //         )
-              //       ],
-              //     ),
-              //     onTap: () {
-              //       // internetSpeedTest.startDownloadTesting(
-              //       //   onDone: (double transferRate, SpeedUnit unit) {
-              //       //     setState(() {
-              //       //       downSpeed = transferRate.toString();
-              //       //     });
-              //       //   },
-              //       //   onProgress: (double percent, double transferRate,
-              //       //       SpeedUnit unit) {
-              //       //     setState(() {
-              //       //       downSpeed = transferRate.toString();
-              //       //     });
-              //       //   },
-              //       //   onError: (String errorMessage, String speedTestError) {
-              //       //     downSpeed = 'Error';
-              //       //   },
-              //       // );
-              //       // internetSpeedTest.startUploadTesting(
-              //       //   onDone: (double transferRate, SpeedUnit unit) {
-              //       //     setState(() {
-              //       //       upSpeed = transferRate.toString();
-              //       //     });
-              //       //   },
-              //       //   onProgress: (double percent, double transferRate,
-              //       //       SpeedUnit unit) {
-              //       //     setState(() {
-              //       //       upSpeed = transferRate.toString();
-              //       //     });
-              //       //   },
-              //       //   onError: (String errorMessage, String speedTestError) {
-              //       //     upSpeed = 'Error';
-              //       //   },
-              //       // );
-              //     },
-              //   ),
-              // ),
-
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Color(0xffefefef),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: ListTile(
+                  leading: Icon(Icons.network_check),
+                  title: Row(
+                    children: [
+                      Text(
+                        'Down: ',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w300, color: Colors.black38),
+                      ),
+                      Text(
+                        '$downSpeed mb/s',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w300, color: Colors.black38),
+                      ),
+                      Text(
+                        ' - Up: ',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w300, color: Colors.black38),
+                      ),
+                      Text(
+                        '$upSpeed mb/s',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w300, color: Colors.black38),
+                      )
+                    ],
+                  ),
+                  onTap: () {
+                    internetSpeedTest.startDownloadTesting(
+                      onDone: (double transferRate, SpeedUnit unit) {
+                        setState(() {
+                          downSpeed = transferRate.toStringAsFixed(2);
+                        });
+                        internetSpeedTest.startUploadTesting(
+                          onDone: (double transferRate, SpeedUnit unit) {
+                            setState(() {
+                              upSpeed = transferRate.toStringAsFixed(2);
+                            });
+                          },
+                          onProgress: (double percent, double transferRate,
+                              SpeedUnit unit) {
+                            setState(() {
+                              upSpeed = transferRate.toStringAsFixed(2);
+                            });
+                          },
+                          onError:
+                              (String errorMessage, String speedTestError) {
+                            upSpeed = 'Error';
+                          },
+                        );
+                      },
+                      onProgress: (double percent, double transferRate,
+                          SpeedUnit unit) {
+                        setState(() {
+                          downSpeed = transferRate.toStringAsFixed(2);
+                        });
+                      },
+                      onError: (String errorMessage, String speedTestError) {
+                        downSpeed = 'Error';
+                      },
+                    );
+                  },
+                ),
+              ),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
@@ -394,6 +400,12 @@ class _HomePageState extends State<HomePage> {
                 leading: Icon(Icons.logout),
                 title: Text('Log Out'),
                 onTap: () {
+                  upSpeed = 'Test';
+                  downSpeed = 'Test';
+                  username = '';
+                  password = '';
+                  prefs.setString('username', 'null');
+                  prefs.setString('password', 'null');
                   Navigator.pop(context);
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => MyHomePage()));

@@ -297,10 +297,10 @@ Future<void> test(BuildContext context) async {
 
 /////////////////////////////////// SessionUsage ////////////////////////
             index = response.content().indexOf('lblTotalData');
-            if (index != -1)
-              sessionUsage = parse(response, index);
-            else
-              sessionUsage = "00000000000000000";
+            if (index != -1) {
+              sessionUsage = parse(response, index)[parse(response, index).length-2]=='M'?double.parse(parse(response, index).substring(6, parse(response, index).length - 3))/1024:double.parse(parse(response, index).substring(6, parse(response, index).length - 3));
+            } else
+              sessionUsage = 0.0;
 
 /////////////////////////////////// PlanName ///////////////////////////
             index = response.content().indexOf('lblPlanName');
@@ -333,7 +333,7 @@ Future<void> test(BuildContext context) async {
 
 /////////////////////////////////// CurrentUsage ///////////////////////////
             index = response.content().indexOf('lblCurrentUsage');
-            if (index != -1) currentUsage = parse(response, index);
+            if (index != -1) currentUsage = parse(response, index)[parse(response, index).length-2]=='M'?double.parse(parse(response, index).substring(0, parse(response, index).length - 3))/1024:double.parse(parse(response, index).substring(0, parse(response, index).length - 3));
 
 /////////////////////////////////// EmailId ////////////////////////////////
             index = response.content().indexOf('lblEmail');

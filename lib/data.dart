@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 SharedPreferences prefs;
 InternetSpeedTest internetSpeedTest;
 
+
+//   <span id="lblTotalData">Usage:317.43 MB</span></span>    //
 String downSpeed = 'Test';
 String upSpeed = 'Test';
 
@@ -14,10 +16,10 @@ int startIndex;
 int endIndex;
 int i = 0;
 
-String url = 'https://myaccount.keralavisionisp.com/Customer/Default.aspx';
+String url = 'https://selfcare.keralavisionisp.com/Customer/Default.aspx';
 String url2 =
-    'https://myaccount.keralavisionisp.com/Customer/PortalLogin.aspx?h8=1';
-String url4 = 'https://myaccount.keralavisionisp.com/Customer/Gauge.aspx';
+    'https://selfcare.keralavisionisp.com/Customer/PortalLogin.aspx?h8=1';
+String url4 = 'https://selfcare.keralavisionisp.com/Customer/Gauge.aspx';
 
 String slicedResponse;
 String viewstate;
@@ -31,8 +33,8 @@ String name;
 String email = mobNumber;
 String address;
 String validityPeriod;
-String currentUsage = '0000000000000000';
-String sessionUsage = '00000000000000';
+double currentUsage = 0.0;
+double sessionUsage = 0.0;
 String accountNum;
 String plan;
 String macAddress = 'Not Registered';

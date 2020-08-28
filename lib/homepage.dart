@@ -55,11 +55,8 @@ class _HomePageState extends State<HomePage> {
                 initialValue: planMap['Type'] == 'UL'
                     ? double.parse(
                         validityPeriod.substring(0, validityPeriod.length - 4))
-                    : (double.parse(
-                          currentUsage.substring(0, currentUsage.length - 3),
-                        ) +
-                        double.parse(sessionUsage.substring(
-                            6, sessionUsage.length - 3))),
+                    : (currentUsage +
+                        sessionUsage),
                 max: planMap['Type'] == 'UL'
                     ? double.parse(planMap['Validity'].toString())
                     : double.parse(planMap['Limit'].toString()),
@@ -157,14 +154,8 @@ class _HomePageState extends State<HomePage> {
                             ? Column(
                                 children: [
                                   Text(
-                                    (double.parse(
-                                                  sessionUsage.substring(6,
-                                                      sessionUsage.length - 3),
-                                                ) +
-                                                double.parse(
-                                                  currentUsage.substring(0,
-                                                      currentUsage.length - 3),
-                                                ))
+                                    (sessionUsage +
+                                                currentUsage)
                                             .toStringAsFixed(2) +
                                         ' GB',
                                     textAlign: TextAlign.center,
@@ -183,14 +174,8 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   Text(
                                     (planMap['Limit'] -
-                                                double.parse(
-                                                  sessionUsage.substring(6,
-                                                      sessionUsage.length - 3),
-                                                ) -
-                                                double.parse(
-                                                  currentUsage.substring(0,
-                                                      currentUsage.length - 3),
-                                                ))
+                                                sessionUsage                                                 -
+                                                currentUsage)
                                             .toStringAsFixed(2) +
                                         ' GB',
                                     textAlign: TextAlign.center,
@@ -379,7 +364,7 @@ class _HomePageState extends State<HomePage> {
               ),
               ListTile(
                 leading: Icon(
-                  Icons.confirmation_num,
+                  Icons.confirmation_number,
                 ),
                 title: Text('KV Account Number'),
                 subtitle: Text(accountNum),
@@ -397,7 +382,7 @@ class _HomePageState extends State<HomePage> {
                 onTap: () {},
               ),
               ListTile(
-                leading: Icon(Icons.logout),
+                leading: Icon(Icons.power_settings_new),
                 title: Text('Log Out'),
                 onTap: () {
                   upSpeed = 'Test';

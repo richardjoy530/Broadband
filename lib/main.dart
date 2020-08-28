@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:Broadband/data.dart';
 import 'package:Broadband/homepage.dart';
 import 'package:Broadband/loading.dart';
@@ -131,8 +129,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                   username = usernameController.text;
                   password = passwordController.text;
+                  clicked = true;
+
+                  url =
+                      'https://selfcare.keralavisionisp.com/Customer/Default.aspx';
+                  url2 =
+                      'https://selfcare.keralavisionisp.com/Customer/PortalLogin.aspx?h8=1';
+                  url4 =
+                      'https://selfcare.keralavisionisp.com/Customer/Gauge.aspx';
                   test(context);
-                  print([usernameController.text, passwordController.text]);
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width / 2.5,
@@ -237,7 +242,7 @@ Map<String, dynamic> planDetails(String plan) {
   };
 }
 
-Future<void> test(BuildContext context) async {
+void test(BuildContext context) {
   /// LogIn Page GET Response /////////////////////
   Requests.get(url).then((response) {
     int viewstateind = response.content().indexOf('__VIEWSTATE');
@@ -298,7 +303,14 @@ Future<void> test(BuildContext context) async {
 /////////////////////////////////// SessionUsage ////////////////////////
             index = response.content().indexOf('lblTotalData');
             if (index != -1) {
-              sessionUsage = parse(response, index)[parse(response, index).length-2]=='M'?double.parse(parse(response, index).substring(6, parse(response, index).length - 3))/1024:double.parse(parse(response, index).substring(6, parse(response, index).length - 3));
+              sessionUsage =
+                  parse(response, index)[parse(response, index).length - 2] ==
+                          'M'
+                      ? double.parse(parse(response, index).substring(
+                              6, parse(response, index).length - 3)) /
+                          1024
+                      : double.parse(parse(response, index)
+                          .substring(6, parse(response, index).length - 3));
             } else
               sessionUsage = 0.0;
 
@@ -333,7 +345,15 @@ Future<void> test(BuildContext context) async {
 
 /////////////////////////////////// CurrentUsage ///////////////////////////
             index = response.content().indexOf('lblCurrentUsage');
-            if (index != -1) currentUsage = parse(response, index)[parse(response, index).length-2]=='M'?double.parse(parse(response, index).substring(0, parse(response, index).length - 3))/1024:double.parse(parse(response, index).substring(0, parse(response, index).length - 3));
+            if (index != -1)
+              currentUsage =
+                  parse(response, index)[parse(response, index).length - 2] ==
+                          'M'
+                      ? double.parse(parse(response, index).substring(
+                              0, parse(response, index).length - 3)) /
+                          1024
+                      : double.parse(parse(response, index)
+                          .substring(0, parse(response, index).length - 3));
 
 /////////////////////////////////// EmailId ////////////////////////////////
             index = response.content().indexOf('lblEmail');
@@ -348,12 +368,6 @@ Future<void> test(BuildContext context) async {
 
             Navigator.pushReplacement(
                 context, MaterialPageRoute(builder: (context) => HomePage()));
-          } else {
-            Fluttertoast.showToast(
-                msg: 'Trying again',
-                timeInSecForIosWeb: 2,
-                backgroundColor: Color(0x31000000));
-            test(context);
           }
         });
       } else
@@ -361,6 +375,16 @@ Future<void> test(BuildContext context) async {
             msg: 'Login Failed',
             timeInSecForIosWeb: 2,
             backgroundColor: Color(0x31000000));
+      if (url.contains('selfcare')) {
+        url = 'https://myaccount.keralavisionisp.com/Customer/Default.aspx';
+        url2 =
+            'https://myaccount.keralavisionisp.com/Customer/PortalLogin.aspx?h8=1';
+        url4 = 'https://myaccount.keralavisionisp.com/Customer/Gauge.aspx';
+        if (clicked) {
+          clicked = false;
+          test(context);
+        }
+      }
     });
   });
 }

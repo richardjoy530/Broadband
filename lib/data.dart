@@ -5,13 +5,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 SharedPreferences prefs;
 InternetSpeedTest internetSpeedTest;
 
-
 //   <span id="lblTotalData">Usage:317.43 MB</span></span>    //
 String downSpeed = 'Test';
 String upSpeed = 'Test';
 
 bool remember = false;
 bool check = true;
+bool clicked = false;
 int startIndex;
 int endIndex;
 int i = 0;

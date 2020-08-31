@@ -15,7 +15,7 @@ bool clicked = false;
 int startIndex;
 int endIndex;
 int i = 0;
-
+String hostname;
 String url = 'https://selfcare.keralavisionisp.com/Customer/Default.aspx';
 String url2 =
     'https://selfcare.keralavisionisp.com/Customer/PortalLogin.aspx?h8=1';

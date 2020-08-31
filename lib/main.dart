@@ -293,6 +293,7 @@ void test(BuildContext context) {
 //////////////////////////////////// Guage details GET Response //////////
         Requests.get(url4).then((response) {
           int index = response.content().indexOf('lblName');
+          print(response.content());
           if (index != -1) {
             /////////////// Save LogIn Id ////////////////////////////////
             prefs.setString('username', username);
@@ -368,22 +369,14 @@ void test(BuildContext context) {
 
             Navigator.pushReplacement(
                 context, MaterialPageRoute(builder: (context) => HomePage()));
-          }
+          } else
+            test(context);
         });
-      } else
+      } else {
         Fluttertoast.showToast(
             msg: 'Login Failed',
             timeInSecForIosWeb: 2,
             backgroundColor: Color(0x31000000));
-      if (url.contains('selfcare')) {
-        url = 'https://myaccount.keralavisionisp.com/Customer/Default.aspx';
-        url2 =
-            'https://myaccount.keralavisionisp.com/Customer/PortalLogin.aspx?h8=1';
-        url4 = 'https://myaccount.keralavisionisp.com/Customer/Gauge.aspx';
-        if (clicked) {
-          clicked = false;
-          test(context);
-        }
       }
     });
   });

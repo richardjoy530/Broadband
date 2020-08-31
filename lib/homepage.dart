@@ -1,3 +1,4 @@
+import 'package:Broadband/about.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_speed_test/callbacks_enum.dart';
 import 'package:internet_speed_test/internet_speed_test.dart';
@@ -55,8 +56,7 @@ class _HomePageState extends State<HomePage> {
                 initialValue: planMap['Type'] == 'UL'
                     ? double.parse(
                         validityPeriod.substring(0, validityPeriod.length - 4))
-                    : (currentUsage +
-                        sessionUsage),
+                    : (currentUsage + sessionUsage),
                 max: planMap['Type'] == 'UL'
                     ? double.parse(planMap['Validity'].toString())
                     : double.parse(planMap['Limit'].toString()),
@@ -154,8 +154,7 @@ class _HomePageState extends State<HomePage> {
                             ? Column(
                                 children: [
                                   Text(
-                                    (sessionUsage +
-                                                currentUsage)
+                                    (sessionUsage + currentUsage)
                                             .toStringAsFixed(2) +
                                         ' GB',
                                     textAlign: TextAlign.center,
@@ -174,7 +173,7 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   Text(
                                     (planMap['Limit'] -
-                                                sessionUsage                                                 -
+                                                sessionUsage -
                                                 currentUsage)
                                             .toStringAsFixed(2) +
                                         ' GB',
@@ -379,7 +378,11 @@ class _HomePageState extends State<HomePage> {
               ListTile(
                 leading: Icon(Icons.info),
                 title: Text('About'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => AboutPage()));
+                },
               ),
               ListTile(
                 leading: Icon(Icons.power_settings_new),

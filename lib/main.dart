@@ -293,7 +293,7 @@ void test(BuildContext context) {
 //////////////////////////////////// Guage details GET Response //////////
         Requests.get(url4).then((response) {
           int index = response.content().indexOf('lblName');
-          print(response.content());
+          //print(response.content());
           if (index != -1) {
             /////////////// Save LogIn Id ////////////////////////////////
             prefs.setString('username', username);

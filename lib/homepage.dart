@@ -242,94 +242,9 @@ class _HomePageState extends State<HomePage> {
                   )
                 ],
               ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: Color(0xffefefef),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: ListTile(
-                  leading: Icon(Icons.network_check),
-                  title: Row(
-                    children: [
-                      Text(
-                        'Down: ',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w300, color: Colors.black38),
-                      ),
-                      Text(
-                        '$downSpeed mb/s',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w300, color: Colors.black38),
-                      ),
-                      Text(
-                        ' - Up: ',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w300, color: Colors.black38),
-                      ),
-                      Text(
-                        '$upSpeed mb/s',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w300, color: Colors.black38),
-                      )
-                    ],
-                  ),
-                  onTap: () {
-                    internetSpeedTest.startDownloadTesting(
-                      onDone: (double transferRate, SpeedUnit unit) {
-                        setState(() {
-                          downSpeed = transferRate.toStringAsFixed(2);
-                        });
-                        internetSpeedTest.startUploadTesting(
-                          onDone: (double transferRate, SpeedUnit unit) {
-                            setState(() {
-                              upSpeed = transferRate.toStringAsFixed(2);
-                            });
-                          },
-                          onProgress: (double percent, double transferRate,
-                              SpeedUnit unit) {
-                            setState(() {
-                              upSpeed = transferRate.toStringAsFixed(2);
-                            });
-                          },
-                          onError:
-                              (String errorMessage, String speedTestError) {
-                            upSpeed = 'Error';
-                          },
-                        );
-                      },
-                      onProgress: (double percent, double transferRate,
-                          SpeedUnit unit) {
-                        setState(() {
-                          downSpeed = transferRate.toStringAsFixed(2);
-                        });
-                      },
-                      onError: (String errorMessage, String speedTestError) {
-                        downSpeed = 'Error';
-                      },
-                    );
-                  },
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: Color(0xffefefef),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: ListTile(
-                  leading: Icon(Icons.account_circle),
-                  title: Text(
-                    name[0].toUpperCase() + name.substring(1).toLowerCase(),
-                  ),
-                  subtitle: Text(email),
-                  onTap: () {},
-                ),
-              )
+              //SpeedTest(),
+              DailyUsage(),
+              AboutTile()
             ],
           ),
         ),
@@ -402,5 +317,246 @@ class _HomePageState extends State<HomePage> {
             ],
           );
         });
+  }
+}
+
+class DailyUsage extends StatelessWidget {
+  const DailyUsage({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return planMap['Type'] == 'UL'? Container(
+              width: MediaQuery.of(context).size.width / 3,
+              decoration: BoxDecoration(
+                color: Color(0xffefefef),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                    child: Column(
+                  children: [
+                    Text(
+                      ((sessionUsage + currentUsage) /
+                                  (planMap["Validity"] -
+                                      int.parse(
+                                          validityPeriod.substring(
+                                              0,
+                                              validityPeriod.length -
+                                                  4))))
+                              .toStringAsFixed(2) +
+                          ' GB',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    Text(
+                      'Daily Average',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                          color: Colors.black38),
+                    )
+                  ],
+                )),
+              ),
+            ): Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            "Average Daily Usage",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontWeight: FontWeight.w300, color: Colors.black38),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width / 3,
+              decoration: BoxDecoration(
+                color: Color(0xffefefef),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                    child: Column(
+                  children: [
+                    Text(
+                      ((sessionUsage + currentUsage) /
+                                  (planMap["Validity"] -
+                                      int.parse(
+                                          validityPeriod.substring(
+                                              0,
+                                              validityPeriod.length -
+                                                  4))))
+                              .toStringAsFixed(2) +
+                          ' GB',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    Text(
+                      'Used',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                          color: Colors.black38),
+                    )
+                  ],
+                )),
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width / 3,
+              decoration: BoxDecoration(
+                color: Color(0xffefefef),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                    child: Column(
+                  children: [
+                    Text(
+                      ((planMap['Limit'] -
+                                      sessionUsage -
+                                      currentUsage) /
+                                  (int.parse(validityPeriod.substring(
+                                      0, validityPeriod.length - 4))))
+                              .toStringAsFixed(2) +
+                          ' GB',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    Text(
+                      'Remaining',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                          color: Colors.black38),
+                    )
+                  ],
+                )),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class AboutTile extends StatelessWidget {
+  const AboutTile({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        color: Color(0xffefefef),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListTile(
+        leading: Icon(Icons.account_circle),
+        title: Text(
+          name[0].toUpperCase() + name.substring(1).toLowerCase(),
+        ),
+        subtitle: Text(email),
+        onTap: () {},
+      ),
+    );
+  }
+}
+
+class SpeedTest extends StatefulWidget {
+  const SpeedTest({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _SpeedTestState createState() => _SpeedTestState();
+}
+
+class _SpeedTestState extends State<SpeedTest> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        color: Color(0xffefefef),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListTile(
+        leading: Icon(Icons.network_check),
+        title: Row(
+          children: [
+            Text(
+              'Down: ',
+              textAlign: TextAlign.center,
+              style:
+                  TextStyle(fontWeight: FontWeight.w300, color: Colors.black38),
+            ),
+            Text(
+              '$downSpeed mb/s',
+              textAlign: TextAlign.center,
+              style:
+                  TextStyle(fontWeight: FontWeight.w300, color: Colors.black38),
+            ),
+            Text(
+              ' - Up: ',
+              textAlign: TextAlign.center,
+              style:
+                  TextStyle(fontWeight: FontWeight.w300, color: Colors.black38),
+            ),
+            Text(
+              '$upSpeed mb/s',
+              textAlign: TextAlign.center,
+              style:
+                  TextStyle(fontWeight: FontWeight.w300, color: Colors.black38),
+            )
+          ],
+        ),
+        onTap: () {
+          internetSpeedTest.startDownloadTesting(
+            onDone: (double transferRate, SpeedUnit unit) {
+              setState(() {
+                downSpeed = transferRate.toStringAsFixed(2);
+              });
+              internetSpeedTest.startUploadTesting(
+                onDone: (double transferRate, SpeedUnit unit) {
+                  setState(() {
+                    upSpeed = transferRate.toStringAsFixed(2);
+                  });
+                },
+                onProgress:
+                    (double percent, double transferRate, SpeedUnit unit) {
+                  setState(() {
+                    upSpeed = transferRate.toStringAsFixed(2);
+                  });
+                },
+                onError: (String errorMessage, String speedTestError) {
+                  upSpeed = 'Error';
+                },
+              );
+            },
+            onProgress: (double percent, double transferRate, SpeedUnit unit) {
+              setState(() {
+                downSpeed = transferRate.toStringAsFixed(2);
+              });
+            },
+            onError: (String errorMessage, String speedTestError) {
+              downSpeed = 'Error';
+            },
+          );
+        },
+      ),
+    );
   }
 }

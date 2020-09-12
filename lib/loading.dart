@@ -33,7 +33,7 @@ class _LoadingPageState extends State<LoadingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Center(
+      body: Center( 
         child: Container(
           width: 50,
           child: Image.asset('images/icon.png'),

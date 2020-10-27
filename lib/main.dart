@@ -266,7 +266,7 @@ void test(BuildContext context) {
 //////////////////////////////// ViewstateGenerator /////////////////////
     slicedResponse = response
         .content()
-        .substring(viewstategeneratorind, viewstategeneratorind + 100);
+        .substring(viewstategeneratorind, viewstategeneratorind + 500);
     startIndex = 55;
     endIndex = 63;
     viewstategenerator = slicedResponse.substring(startIndex, endIndex);
@@ -274,7 +274,7 @@ void test(BuildContext context) {
 /////////////////////////////////// EventValidation /////////////////////
     slicedResponse = response
         .content()
-        .substring(eventvalidationind, eventvalidationind + 300);
+        .substring(eventvalidationind, eventvalidationind + 500);
     startIndex = null;
     endIndex = null;
     for (var i = 0; endIndex == null; i++)

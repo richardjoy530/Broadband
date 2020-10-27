@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:internet_speed_test/internet_speed_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SharedPreferences prefs;
-InternetSpeedTest internetSpeedTest;
 
 //   <span id="lblTotalData">Usage:317.43 MB</span></span>    //
 String downSpeed = 'Test';

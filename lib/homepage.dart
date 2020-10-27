@@ -1,7 +1,5 @@
 import 'package:Broadband/about.dart';
 import 'package:flutter/material.dart';
-import 'package:internet_speed_test/callbacks_enum.dart';
-import 'package:internet_speed_test/internet_speed_test.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 import 'data.dart';
@@ -15,7 +13,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
-    internetSpeedTest = InternetSpeedTest();
     super.initState();
   }
 
@@ -400,7 +397,7 @@ class DailyUsage extends StatelessWidget {
                       style: TextStyle(fontSize: 20),
                     ),
                     Text(
-                      'Used',
+                      'Actual',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontWeight: FontWeight.w300,
@@ -433,7 +430,7 @@ class DailyUsage extends StatelessWidget {
                       style: TextStyle(fontSize: 20),
                     ),
                     Text(
-                      'Remaining',
+                      'Expected',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontWeight: FontWeight.w300,
@@ -448,6 +445,9 @@ class DailyUsage extends StatelessWidget {
       ],
     );
   }
+
+  
+
 }
 
 class AboutTile extends StatelessWidget {
@@ -470,92 +470,6 @@ class AboutTile extends StatelessWidget {
         ),
         subtitle: Text(email),
         onTap: () {},
-      ),
-    );
-  }
-}
-
-class SpeedTest extends StatefulWidget {
-  const SpeedTest({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  _SpeedTestState createState() => _SpeedTestState();
-}
-
-class _SpeedTestState extends State<SpeedTest> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20),
-      decoration: BoxDecoration(
-        color: Color(0xffefefef),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: ListTile(
-        leading: Icon(Icons.network_check),
-        title: Row(
-          children: [
-            Text(
-              'Down: ',
-              textAlign: TextAlign.center,
-              style:
-                  TextStyle(fontWeight: FontWeight.w300, color: Colors.black38),
-            ),
-            Text(
-              '$downSpeed mb/s',
-              textAlign: TextAlign.center,
-              style:
-                  TextStyle(fontWeight: FontWeight.w300, color: Colors.black38),
-            ),
-            Text(
-              ' - Up: ',
-              textAlign: TextAlign.center,
-              style:
-                  TextStyle(fontWeight: FontWeight.w300, color: Colors.black38),
-            ),
-            Text(
-              '$upSpeed mb/s',
-              textAlign: TextAlign.center,
-              style:
-                  TextStyle(fontWeight: FontWeight.w300, color: Colors.black38),
-            )
-          ],
-        ),
-        onTap: () {
-          internetSpeedTest.startDownloadTesting(
-            onDone: (double transferRate, SpeedUnit unit) {
-              setState(() {
-                downSpeed = transferRate.toStringAsFixed(2);
-              });
-              internetSpeedTest.startUploadTesting(
-                onDone: (double transferRate, SpeedUnit unit) {
-                  setState(() {
-                    upSpeed = transferRate.toStringAsFixed(2);
-                  });
-                },
-                onProgress:
-                    (double percent, double transferRate, SpeedUnit unit) {
-                  setState(() {
-                    upSpeed = transferRate.toStringAsFixed(2);
-                  });
-                },
-                onError: (String errorMessage, String speedTestError) {
-                  upSpeed = 'Error';
-                },
-              );
-            },
-            onProgress: (double percent, double transferRate, SpeedUnit unit) {
-              setState(() {
-                downSpeed = transferRate.toStringAsFixed(2);
-              });
-            },
-            onError: (String errorMessage, String speedTestError) {
-              downSpeed = 'Error';
-            },
-          );
-        },
       ),
     );
   }

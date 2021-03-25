@@ -73,3 +73,13 @@ Map<String, String> headers = {
   'User-Agent':
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36'
 };
+bool darkMode = true;
+class BroadBandTheme{
+  static ThemeData themeData = darkMode?ThemeData.dark():ThemeData.light();
+  static Color iconColor = darkMode?Color(0xffcbcbcb):Color(0xff000000);
+  static Color trackColor = darkMode?Color(0xFF212121):Color(0xffefefef);
+  static Color progressBarColor = darkMode?Color(0xFF959595):Color(0xff63bdb7);
+  static Color primaryFontColor = darkMode?Color(0xFFECECEC):Color(0xff000000);
+  static Color secondaryFontColor = darkMode?Color(0xFFBBBBBB):Color(0x61000000);
+  static Color boxBackground = darkMode?Color(0xFF212121):Color(0xffefefef);
+}

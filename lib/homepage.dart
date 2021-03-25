@@ -27,22 +27,25 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Icon(
-                    Icons.data_usage,
-                    color: Color(0xff555555),
-                  ),
+                  IconButton(
+                      icon: Icon(
+                        Icons.data_usage,
+                        color: BroadBandTheme.iconColor,
+                      ),
+                      onPressed: () {}),
                   Text(
                     'BroadBand Usage',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 25,
                         fontFamily: 'Roboto',
-                        color: Colors.black),
+                        color: BroadBandTheme.primaryFontColor),
                   ),
                   IconButton(
                       icon: Icon(
                         Icons.menu,
-                        color: Colors.black,
+                        color: BroadBandTheme.iconColor,
                       ),
                       onPressed: () {
                         onMenuPressed(context);
@@ -63,8 +66,8 @@ class _HomePageState extends State<HomePage> {
                   angleRange: 360,
                   customColors: CustomSliderColors(
                     hideShadow: true,
-                    trackColor: Color(0xffefefef),
-                    progressBarColor: Color(0xff63bdb7),
+                    trackColor: BroadBandTheme.trackColor,
+                    progressBarColor: BroadBandTheme.progressBarColor,
                   ),
                   customWidths:
                       CustomSliderWidths(trackWidth: 10, progressBarWidth: 12),
@@ -101,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                                     style: TextStyle(
                                         fontSize: 22,
                                         fontWeight: FontWeight.w300,
-                                        color: Colors.black38),
+                                        color: BroadBandTheme.secondaryFontColor),
                                   )
                                 : Text(
                                     ' GB',
@@ -109,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                                     style: TextStyle(
                                         fontSize: 22,
                                         fontWeight: FontWeight.w300,
-                                        color: Colors.black38),
+                                        color: BroadBandTheme.secondaryFontColor),
                                   )
                           ],
                         ),
@@ -120,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                                 style: TextStyle(
                                     fontSize: 22,
                                     fontWeight: FontWeight.w300,
-                                    color: Colors.black38),
+                                    color: BroadBandTheme.secondaryFontColor),
                               )
                             : Text(
                                 'Used',
@@ -128,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                                 style: TextStyle(
                                     fontSize: 22,
                                     fontWeight: FontWeight.w300,
-                                    color: Colors.black38),
+                                    color: BroadBandTheme.secondaryFontColor),
                               )
                       ],
                     ),
@@ -141,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                   Container(
                     width: MediaQuery.of(context).size.width / 3,
                     decoration: BoxDecoration(
-                      color: Color(0xffefefef),
+                      color: BroadBandTheme.boxBackground,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
@@ -162,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontWeight: FontWeight.w300,
-                                        color: Colors.black38),
+                                        color: BroadBandTheme.secondaryFontColor),
                                   )
                                 ],
                               )
@@ -182,18 +185,18 @@ class _HomePageState extends State<HomePage> {
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontWeight: FontWeight.w300,
-                                        color: Colors.black38),
+                                        color: BroadBandTheme.secondaryFontColor),
                                   )
                                 ],
                               ),
                       ),
                     ),
                   ),
-                  Icon(Icons.link, color: Colors.black38),
+                  Icon(Icons.link, color: BroadBandTheme.iconColor),
                   Container(
                     width: MediaQuery.of(context).size.width / 3,
                     decoration: BoxDecoration(
-                      color: Color(0xffefefef),
+                      color: BroadBandTheme.boxBackground,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
@@ -212,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontWeight: FontWeight.w300,
-                                        color: Colors.black38),
+                                        color: BroadBandTheme.secondaryFontColor),
                                   )
                                 ],
                               )
@@ -230,7 +233,7 @@ class _HomePageState extends State<HomePage> {
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontWeight: FontWeight.w300,
-                                        color: Colors.black38),
+                                        color: BroadBandTheme.secondaryFontColor),
                                   )
                                 ],
                               ),
@@ -267,7 +270,7 @@ class _HomePageState extends State<HomePage> {
               ),
               ListTile(
                 leading: Icon(
-                  Icons.access_time,
+                  Icons.access_time, color: BroadBandTheme.iconColor,
                 ),
                 title: Text('Plan'),
                 subtitle: Text(plan),
@@ -275,20 +278,22 @@ class _HomePageState extends State<HomePage> {
               ),
               ListTile(
                 leading: Icon(
-                  Icons.confirmation_number,
+                  Icons.confirmation_number, color: BroadBandTheme.iconColor,
                 ),
                 title: Text('KV Account Number'),
                 subtitle: Text(accountNum),
                 onTap: () {},
               ),
               ListTile(
-                leading: Icon(Icons.router),
+                leading: Icon(Icons.router, color: BroadBandTheme.iconColor,
+                ),
                 title: Text('MAC Address'),
                 subtitle: Text(macAddress),
                 onTap: () {},
               ),
               ListTile(
-                leading: Icon(Icons.info),
+                leading: Icon(Icons.info, color: BroadBandTheme.iconColor,
+                ),
                 title: Text('About'),
                 onTap: () {
                   Navigator.pop(context);
@@ -297,7 +302,8 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.power_settings_new),
+                leading: Icon(Icons.power_settings_new, color: BroadBandTheme.iconColor,
+                ),
                 title: Text('Log Out'),
                 onTap: () {
                   upSpeed = 'Test';
@@ -327,7 +333,7 @@ class DailyUsage extends StatelessWidget {
     return planMap['Type'] == 'UL'? Container(
               width: MediaQuery.of(context).size.width / 3,
               decoration: BoxDecoration(
-                color: Color(0xffefefef),
+                color: BroadBandTheme.boxBackground,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Padding(
@@ -353,7 +359,7 @@ class DailyUsage extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontWeight: FontWeight.w300,
-                          color: Colors.black38),
+                          color: BroadBandTheme.secondaryFontColor),
                     )
                   ],
                 )),
@@ -366,7 +372,7 @@ class DailyUsage extends StatelessWidget {
             "Average Daily Usage",
             textAlign: TextAlign.center,
             style: TextStyle(
-                fontWeight: FontWeight.w300, color: Colors.black38),
+                fontWeight: FontWeight.w300, color: BroadBandTheme.secondaryFontColor),
           ),
         ),
         Row(
@@ -375,7 +381,7 @@ class DailyUsage extends StatelessWidget {
             Container(
               width: MediaQuery.of(context).size.width / 3,
               decoration: BoxDecoration(
-                color: Color(0xffefefef),
+                color: BroadBandTheme.boxBackground,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Padding(
@@ -401,7 +407,7 @@ class DailyUsage extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontWeight: FontWeight.w300,
-                          color: Colors.black38),
+                          color: BroadBandTheme.secondaryFontColor),
                     )
                   ],
                 )),
@@ -410,7 +416,7 @@ class DailyUsage extends StatelessWidget {
             Container(
               width: MediaQuery.of(context).size.width / 3,
               decoration: BoxDecoration(
-                color: Color(0xffefefef),
+                color: BroadBandTheme.boxBackground,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Padding(
@@ -434,7 +440,7 @@ class DailyUsage extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontWeight: FontWeight.w300,
-                          color: Colors.black38),
+                          color: BroadBandTheme.secondaryFontColor),
                     )
                   ],
                 )),
@@ -460,11 +466,11 @@ class AboutTile extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Color(0xffefefef),
+        color: BroadBandTheme.boxBackground,
         borderRadius: BorderRadius.circular(10),
       ),
       child: ListTile(
-        leading: Icon(Icons.account_circle),
+        leading: Icon(Icons.account_circle, color: BroadBandTheme.iconColor,),
         title: Text(
           name[0].toUpperCase() + name.substring(1).toLowerCase(),
         ),

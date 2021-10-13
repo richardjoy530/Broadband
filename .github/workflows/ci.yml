@@ -40,14 +40,14 @@ jobs:
           tar -xf commandlinetools.zip
           tar -xf java15.zip
           tar -xf flutter.zip
-          set PATH=%PATH%;%CD%\cmdline-tools\bin
-          set PATH=%PATH%;%CD%\jdk-15.0.2\bin
-          set PATH=%PATH%;%cd%\flutter\bin
           ren cmdline-tools latest
           mkdir cmdline-tools
           move latest cmdline-tools
           mkdir android
           move cmdline-tools android
+          set PATH=%PATH%;%CD%\android\cmdline-tools\latest\bin
+          set PATH=%PATH%;%CD%\jdk-15.0.2\bin
+          set PATH=%PATH%;%cd%\flutter\bin
           dir
           echo %PATH%
           sdkmanager --list

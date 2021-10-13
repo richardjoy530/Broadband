@@ -1,0 +1,53 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: windows-2019
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: Environment
+        run: |
+          echo %PATH%
+          echo %cd%
+
+      - name: Download and setup tools
+        run: |
+          curl -o commandlinetools.zip "https://dl.google.com/android/repository/commandlinetools-win-7583922_latest.zip"
+          curl -o java15.zip "https://download.java.net/java/GA/jdk15.0.2/0d1cfde4252546c6931946de8db48ee2/7/GPL/openjdk-15.0.2_windows-x64_bin.zip"
+          curl -o flutter.zip "https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_2.5.2-stable.zip"
+          tar -xf commandlinetools.zip
+          tar -xf java15.zip
+          tar -xf flutter.zip
+          set PATH=%PATH%;%CD%\cmdline-tools\bin
+          set PATH=%PATH%;%CD%\jdk-15.0.2\bin
+          set PATH=%PATH%;%cd%\flutter\bin
+          ren cmdline-tools latest
+          mkdir cmdline-tools
+          move latest cmdline-tools
+          mkdir android
+          move cmdline-tools android
+          y | sdkmanager --licenses
+
+          
+

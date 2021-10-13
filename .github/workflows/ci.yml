@@ -28,9 +28,9 @@ jobs:
       # Runs a single command using the runners shell
       - name: Environment
         run: |
-        shell: cmd
           echo %PATH%
           echo %cd%
+        shell: cmd
 
       - name: Download and setup tools
         run: |
@@ -50,6 +50,8 @@ jobs:
           mkdir android
           move cmdline-tools android
           y | sdkmanager --licenses
+        shell: cmd
+        
 
           
 

@@ -48,9 +48,6 @@ jobs:
           set PATH=%PATH%;%CD%\android\cmdline-tools\latest\bin
           set PATH=%PATH%;%CD%\jdk-15.0.2\bin
           set PATH=%PATH%;%cd%\flutter\bin
-          dir
-          echo %PATH%
-          sdkmanager --list
           echo y | sdkmanager --licenses
         shell: cmd
         

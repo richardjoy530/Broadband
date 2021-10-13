@@ -43,7 +43,6 @@ jobs:
           set PATH=%PATH%;%CD%\jdk-15.0.2\bin
           set PATH=%PATH%;%cd%\flutter\bin
           yes | sdkmanager "build-tools;28.0.3" "sources;android-29" "system-images;android-29;default;x86_64" "platforms;android-29" "platform-tools"
-          flutter doctor
           flutter build apk
           echo Building over
         shell: cmd

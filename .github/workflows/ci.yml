@@ -48,6 +48,9 @@ jobs:
           move latest cmdline-tools
           mkdir android
           move cmdline-tools android
+          dir
+          echo %PATH%
+          sdkmanager --list
           echo y | sdkmanager --licenses
         shell: cmd
         

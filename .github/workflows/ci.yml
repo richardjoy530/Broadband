@@ -34,7 +34,6 @@ jobs:
 
       - name: Download and setup tools
         run: |
-          shell: cmd
           curl -o commandlinetools.zip "https://dl.google.com/android/repository/commandlinetools-win-7583922_latest.zip"
           curl -o java15.zip "https://download.java.net/java/GA/jdk15.0.2/0d1cfde4252546c6931946de8db48ee2/7/GPL/openjdk-15.0.2_windows-x64_bin.zip"
           curl -o flutter.zip "https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_2.5.2-stable.zip"
@@ -49,7 +48,7 @@ jobs:
           move latest cmdline-tools
           mkdir android
           move cmdline-tools android
-          y | sdkmanager --licenses
+          echo y | sdkmanager --licenses
         shell: cmd
         
 

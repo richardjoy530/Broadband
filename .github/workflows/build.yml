@@ -49,7 +49,7 @@ jobs:
           mv cmdline-tools latest
           mkdir sdk
           mkdir sdk/cmdline-tools
-          mv latest android/cmdline-tools/
+          mv latest sdk/cmdline-tools/
 
           export PATH="$PATH:`pwd`/sdk/cmdline-tools/latest/bin"
           export ANDROID_HOME="`pwd`/sdk"
@@ -62,14 +62,14 @@ jobs:
 
           mkdir output
           mv build/app/outputs/flutter-apk output/
-          yes | rm -r flutter/ android/ jdk-15/ Broadband/
+          yes | rm -r flutter/ sdk/ jdk-15/
         shell: bash
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: Debug Build
-          path: D:\a\Broadband\Broadband\output
+          name: Debug build artifacts
+          path: /home/runner/work/Broadband/Broadband/output
         
 
           

@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: Environment
+        run: |
+          echo $PATH
+          pwd
+        shell: bash
+
+      - name: Download and setup tools
+        run: |
+          #!/bin/sh
+
+          git clone https://github.com/richardjoy530/Broadband.git
+
+          curl -o flutter.zip "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_2.5.2-stable.tar.xz"
+          tar -xf flutter.zip
+          export PATH="$PATH:`pwd`/flutter/bin"
+
+          curl -o java15.tar.gz "https://download.java.net/openjdk/jdk15/ri/openjdk-15+36_linux-x64_bin.tar.gz"
+          tar -xf java15.tar.gz
+          export PATH="$PATH:`pwd`/jdk-15/bin"
+
+          curl -o cmdlinetools.zip "https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip"
+          sudo apt install unzip
+          unzip cmdlinetools.zip
+
+          rm cmdlinetools.zip
+          rm flutter.zip
+          rm java15.tar.gz
+
+          mv cmdline-tools latest
+          mkdir android
+          mkdir android/cmdline-tools
+          mv latest android/cmdline-tools/
+
+          export PATH="$PATH:`pwd`/android/cmdline-tools/latest/bin"
+          export ANDROID_HOME="`pwd`/android"
+
+          yes | sdkmanager "build-tools;28.0.3" "sources;android-29" "system-images;android-29;default;x86_64" "platforms;android-29" "platform-tools"
+          yes | flutter doctor --android-licenses
+          flutter doctor
+
+          cd Broadband/
+          flutter build apk
+          cd
+
+          mkdir output
+          mv Broadband/build/app/outputs/flutter-apk output/
+          yes | rm -r flutter/ android/ jdk-15/ Broadband/
+        shell: bash
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Debug Build
+          path: D:\a\Broadband\output\flutter-apk
+        
+
+          
+

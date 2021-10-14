@@ -53,16 +53,18 @@ jobs:
 
           export PATH="$PATH:`pwd`/sdk/cmdline-tools/latest/bin"
           export ANDROID_HOME="`pwd`/sdk"
-
-          yes | sdkmanager "build-tools;28.0.3" "sources;android-29" "system-images;android-29;default;x86_64" "platforms;android-29" "platform-tools"
-          yes | flutter doctor --android-licenses
+          
+          # https://stackoverflow.com/questions/20573282/hudson-yes-standard-output-broken-pipe
+          yes 2>/dev/null | sdkmanager "build-tools;28.0.3" "sources;android-29" "system-images;android-29;default;x86_64" "platforms;android-29" "platform-tools"
+          yes 2>/dev/null | flutter doctor --android-licenses
+          
           flutter doctor
 
           flutter build apk
 
           mkdir output
           mv build/app/outputs/flutter-apk output/
-          yes | rm -r flutter/ sdk/ jdk-15/
+          yes 2>/dev/null | rm -r flutter/ sdk/ jdk-15/
         shell: bash
 
       - name: Upload build artifacts

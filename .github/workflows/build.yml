@@ -30,8 +30,6 @@ jobs:
         run: |
           #!/bin/sh
 
-          git clone https://github.com/richardjoy530/Broadband.git
-
           curl -o flutter.zip "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_2.5.2-stable.tar.xz"
           tar -xf flutter.zip
           export PATH="$PATH:`pwd`/flutter/bin"
@@ -49,23 +47,21 @@ jobs:
           rm java15.tar.gz
 
           mv cmdline-tools latest
-          mkdir android
-          mkdir android/cmdline-tools
+          mkdir sdk
+          mkdir sdk/cmdline-tools
           mv latest android/cmdline-tools/
 
-          export PATH="$PATH:`pwd`/android/cmdline-tools/latest/bin"
-          export ANDROID_HOME="`pwd`/android"
+          export PATH="$PATH:`pwd`/sdk/cmdline-tools/latest/bin"
+          export ANDROID_HOME="`pwd`/sdk"
 
           yes | sdkmanager "build-tools;28.0.3" "sources;android-29" "system-images;android-29;default;x86_64" "platforms;android-29" "platform-tools"
           yes | flutter doctor --android-licenses
           flutter doctor
 
-          cd Broadband/
           flutter build apk
-          cd
 
           mkdir output
-          mv Broadband/build/app/outputs/flutter-apk output/
+          mv build/app/outputs/flutter-apk output/
           yes | rm -r flutter/ android/ jdk-15/ Broadband/
         shell: bash
 
@@ -73,7 +69,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Debug Build
-          path: D:\a\Broadband\output\flutter-apk
+          path: D:\a\Broadband\Broadband\output
         
 
           
